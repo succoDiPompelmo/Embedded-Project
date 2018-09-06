@@ -22,6 +22,7 @@ int main()
     led_init();
     fdevopen(*USART_Transmit, *USART_Receive);
     double T = 1000.00;
+
     while(1)
     {
         SRAM_test();
@@ -55,8 +56,7 @@ void SRAM_test(void)
             write_errors++;
         }
 }
-    // Retrieval phase: Check that no values were changed during or after the write
-phase
+    // Retrieval phase: Check that no values were changed during or after the write phase
     srand(seed);    // reset the PRNG to the state it had before the write phase
     for (uint16_t i = 0; i < ext_ram_size; i++) {
         uint8_t some_value = rand();
