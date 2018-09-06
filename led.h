@@ -18,11 +18,11 @@ void led_init();
 /**
  * @brief Turn LED on
  */
- void led_turn_on();
+void led_turn_on();
 
- /**
-  * @brief Turn LED off
-  */
-  void led_turn_off();
+/**
+ * @brief Turn LED off
+ */
+void led_turn_off();
 
-  #endif
+#endif
