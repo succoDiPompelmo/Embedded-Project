@@ -16,16 +16,18 @@ void USART_Init( unsigned int ubrr )
     UCSR0C = (1<<URSEL0) | (1<<USBS0) | (3<<UCSZ00);
 }
 
-void USTART_Trasmit(unsigned char data)
+void USART_Transmit(char data)
 {
     // Wait for empty trasmission buffer
     while( !(UCSR0A & (1 << UDRE0)) );
 
     // Put data into buffer, sends the data
     UDR0 = data;
+
+    return 0;	
 }
 
-unsigned char USTART_Receive( void )
+unsigned char USART_Receive( void )
 {
     // Wait for data to be received
     while( !(UCSR0A & (1 << RXC0)) );
@@ -35,7 +37,7 @@ unsigned char USTART_Receive( void )
 }
 
 
-void USTART_Flush( void )
+void USART_Flush( void )
 {
         unsigned char dummy;
         while (UCSR0A & (1<<RXC0) ) dummy = UDR0;

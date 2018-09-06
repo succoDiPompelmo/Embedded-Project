@@ -12,17 +12,17 @@ void USART_Init( unsigned int ubrr );
 /**
  * @brief Transmit a single character through the serial interface
  */
-void USTART_Trasmit(unsigned char data);
+void USART_Transmit(char data);
 
 /**
  * @brief Receive a character from the serial interface
  */
-unsigned char USTART_Receive( void );
+unsigned char USART_Receive( void );
 
 /**
  * @brief
  */
-void USTART_Flush( void );
+void USART_Flush( void );
 
 /**
  * @brief

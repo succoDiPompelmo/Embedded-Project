@@ -3,16 +3,16 @@
 
 void led_init()
 {
-  DDRC |= (1 << PC0);
-  PORTC |= (1 << PC0);
+  DDRA |= (1 << PA2);
+  PORTA |= (1 << PA2);
 }
 
 void led_turn_on()
 {
-  PORTC &= ~(1 << PC0);
+  PORTA &= ~(1 << PA2);
 }
 
 void led_turn_off()
 {
-  PORTC |= (1 << PC0);
+  PORTA |= (1 << PA2);
 }
