@@ -22,14 +22,12 @@ int main()
     led_init();
     fdevopen(*USART_Transmit, *USART_Receive);
     double T = 1000.00;
-    volatile char *ext_ram = (char *) 0x1800;
     while(1)
     {
         SRAM_test();
         //USART_Transmit('z');
         //_delay_ms(T);
 	      //printf("Test it");
-        ext_ram[0] = 0xFF;
         USART_Transmit(USART_Receive());
         printf("Test it");
     }
