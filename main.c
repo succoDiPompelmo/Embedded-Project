@@ -19,18 +19,20 @@ void SRAM_test(void);
 int main()
 {
     USART_Init (MYBURR);
-    led_init();
+    // led_init();
+    MCUCR |= (1 << SRE);
     fdevopen(*USART_Transmit, *USART_Receive);
     double T = 1000.00;
+    volatile char *ext_ram = (char *) 0x1800;
 
     while(1)
     {
-        SRAM_test();
+        ext_ram[10] = 'a';
+        //SRAM_test();
         //USART_Transmit('z');
-        //_delay_ms(T);
-	      //printf("Test it");
-        USART_Transmit(USART_Receive());
-        printf("Test it");
+        _delay_ms(T);
+	    //printf("Test it");
+        printf("Transmitting data to the RAM  ");
     }
 }
 
