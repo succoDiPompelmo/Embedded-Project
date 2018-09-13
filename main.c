@@ -7,7 +7,7 @@
 #define F_CPU 4915200UL
 #include <util/delay.h>
 
-#define FOSC F_CPU// Clock Speed
+#define FOSC F_CPU // Clock Speed
 #define BAUD 9600
 #define MYBURR FOSC/16/BAUD-1
 
@@ -21,22 +21,24 @@ int main()
     USART_Init (MYBURR);
     // led_init();
     MCUCR |= (1 << SRE);
-    //SFIOR |= (1 << XMM2);
+    SFIOR |= (1 << XMM2);
     fdevopen(*USART_Transmit, *USART_Receive);
-    volatile char *ext_ram = (char *) 0xFFFF;
+    volatile char *ext_ram = (char *) 0x1800;
     double T = 1000.00;
     uint8_t retreived_value;
-    uint8_t some_value = 0xFF;
+    uint8_t some_value = 0xCC;
     uint16_t i = 11;
 
     while(1)
     {
-        //SRAM_test();
+        SRAM_test();
 
         ext_ram[0] = some_value;
         retreived_value = ext_ram[0];
         if (retreived_value != some_value) {
             printf("Write phase error: ext_ram[%4d] = %02X (should be %02X)\n\r", i, retreived_value, some_value);
+        } else {
+            printf("OK");
         }
         //USART_Transmit('z');
         _delay_ms(T);
@@ -45,7 +47,6 @@ int main()
     }
 }
 
-#include <stdlib.h>
 void SRAM_test(void)
 {
     volatile char *ext_ram = (char *) 0x1800; // Start address for the SRAM
@@ -61,7 +62,6 @@ void SRAM_test(void)
     for (uint16_t i = 0; i < ext_ram_size; i++) {
         uint8_t some_value = rand();
         ext_ram[i] = some_value;
-        _delay_ms(1000.00);
         uint8_t retreived_value = ext_ram[i];
         if (retreived_value != some_value) {
             printf("Write phase error: ext_ram[%4d] = %02X (should be %02X)\n\r", i, retreived_value, some_value);
