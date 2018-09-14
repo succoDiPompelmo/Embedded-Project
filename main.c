@@ -23,11 +23,21 @@ int main()
     MCUCR |= (1 << SRE);
     SFIOR |= (1 << XMM2);
     fdevopen(*USART_Transmit, *USART_Receive);
-    double T = 500.00;
+    double T = 200.00;
 
     while(1)
     {
         SRAM_test();
+        volatile char *ext_ram = (char *) 0x1800;
+        ext_ram[0] = "c";
+        _delay_ms(T);
+        volatile char *ext_oled = (char *) 0x1000;
+        ext_oled[0] = "d";
+        _delay_ms(T);
+        volatile char *ext_adc = (char *) 0x1400;
+        ext_adc[0] = "f";
+        _delay_ms(T);
+        // SRAM_test();
     }
 }
 
@@ -47,6 +57,7 @@ void SRAM_test(void)
     for (uint16_t i = 0; i < ext_ram_size; i++) {
         uint8_t some_value = rand();
         ext_ram[i] = some_value;
+        //_delay_ms(T);
         uint8_t retreived_value = ext_ram[i];
         if (retreived_value != some_value) {
             printf("Write phase error: ext_ram[%4d] = %02X (should be %02X)\n\r", i, retreived_value, some_value);
