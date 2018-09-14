@@ -19,36 +19,21 @@ void SRAM_test(void);
 int main()
 {
     USART_Init (MYBURR);
-    // led_init();
+    led_init();
     MCUCR |= (1 << SRE);
     SFIOR |= (1 << XMM2);
     fdevopen(*USART_Transmit, *USART_Receive);
-    volatile char *ext_ram = (char *) 0x1800;
-    double T = 1000.00;
-    uint8_t retreived_value;
-    uint8_t some_value = 0xCC;
-    uint16_t i = 11;
+    double T = 500.00;
 
     while(1)
     {
         SRAM_test();
-
-        ext_ram[0] = some_value;
-        retreived_value = ext_ram[0];
-        if (retreived_value != some_value) {
-            printf("Write phase error: ext_ram[%4d] = %02X (should be %02X)\n\r", i, retreived_value, some_value);
-        } else {
-            printf("OK");
-        }
-        //USART_Transmit('z');
-        _delay_ms(T);
-	    //printf("Test it");
-        printf("Transmitting data to the RAM\n\r");
     }
 }
 
 void SRAM_test(void)
 {
+    double T = 500.00;
     volatile char *ext_ram = (char *) 0x1800; // Start address for the SRAM
     uint16_t ext_ram_size = 0x800;
     uint16_t write_errors = 0;
@@ -78,5 +63,10 @@ void SRAM_test(void)
             retrieval_errors++;
         }
 }
-    printf("SRAM test completed with \n%4d errors in write phase and \n%4d errors in retrieval phase\n\n", write_errors, retrieval_errors);
+    printf("SRAM test completed with %4d errors in write phase and %4d errors in retrieval phase\n\n\r", write_errors, retrieval_errors);
+    if (write_errors == 0) {
+        led_turn_on();
+        _delay_ms(T);
+        led_turn_off();
+    }
 }
