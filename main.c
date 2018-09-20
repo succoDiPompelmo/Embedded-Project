@@ -13,6 +13,7 @@
 
 #include "uart_interface.h"
 #include "led.h"
+#include "joystick.h"
 
 void SRAM_test(void);
 
@@ -27,7 +28,9 @@ int main()
 
     while(1)
     {
-        SRAM_test();
+
+        JOYSTICK_Output();
+        /*SRAM_test();
         volatile char *ext_ram = (char *) 0x1800;
         ext_ram[0] = "c";
         _delay_ms(T);
@@ -36,7 +39,8 @@ int main()
         _delay_ms(T);
         volatile char *ext_adc = (char *) 0x1400;
         ext_adc[0] = "f";
-        _delay_ms(T);
+        _delay_ms(T);*/
+
         // SRAM_test();
     }
 }
