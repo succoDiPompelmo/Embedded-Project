@@ -16,7 +16,10 @@
 #include "joystick.h"
 #include "sram_interface.h"
 
-void SRAM_test(void);
+void OLED_Init()
+{
+
+}
 
 int main()
 {
@@ -25,14 +28,18 @@ int main()
     MCUCR |= (1 << SRE);
     SFIOR |= (1 << XMM2);
     fdevopen(*USART_Transmit, *USART_Receive);
-    double T = 200.00;
+    double T = 10.00;
 
     while(1)
     {
-        JOYSTICK_Output();
+        volatile char *oled = (char *) 0x1000;
+        oled[0] = "f";
+        _delay_ms(T);
+        //JOYSTICK_Output();
         //uint8_t value;
         //value = JOYCON_X_Axis();
         //printf("%02X\n\r", value);
+        //SRAM_test();
         /*SRAM_test();
         volatile char *ext_ram = (char *) 0x1800;
         ext_ram[0] = "c";
