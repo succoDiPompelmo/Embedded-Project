@@ -1,7 +1,7 @@
 #include <util/delay.h>
 #include "joystick.h"
 
-#define T_CONVERSION 0.050
+#define T_CONVERSION 0.800
 
 uint8_t JOYCON_X_Axis()
 {
@@ -46,12 +46,18 @@ uint8_t SLIDEBAR_Left()
 void JOYSTICK_Output()
 {
     volatile uint8_t x_value = JOYCON_X_Axis();
-    _delay_ms(10);
+    printf("%02X  ", x_value);
+    _delay_ms(200);
     volatile uint8_t y_value = JOYCON_Y_Axis();
-    _delay_ms(10);
+    printf("%02X  ", y_value);
+    _delay_ms(200);
     volatile uint8_t slidebar_r = SLIDEBAR_Right();
-    _delay_ms(10);
+    printf("%02X  ", slidebar_r);
+    _delay_ms(200);
     volatile uint8_t slidebar_l = SLIDEBAR_Left();
-    _delay_ms(10);
-    printf("X value :%02X  Y value : %02X  Slidebar R : %02X  Slidebar L : %02X\n\r", x_value, y_value, slidebar_r, slidebar_l);
+    printf("%02X  \n\r", slidebar_l);
+    _delay_ms(200);
+    //printf("%02X  ", x_value);
+    //printf("%02X  ",y_value);
+    //printf("%02X  ",slidebar_r);
 }

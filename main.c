@@ -28,8 +28,10 @@ int main()
 
     while(1)
     {
-
         JOYSTICK_Output();
+        //uint8_t value;
+        //value = JOYCON_X_Axis();
+        //printf("%02X\n\r", value);
         /*SRAM_test();
         volatile char *ext_ram = (char *) 0x1800;
         ext_ram[0] = "c";
