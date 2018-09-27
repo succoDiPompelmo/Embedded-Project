@@ -25,16 +25,18 @@ int main()
 {
     USART_Init (MYBURR);
     led_init();
-    MCUCR |= (1 << SRE);
-    SFIOR |= (1 << XMM2);
+   // MCUCR |= (1 << SRE);
+   // SFIOR |= (1 << XMM2);
     fdevopen(*USART_Transmit, *USART_Receive);
-    double T = 10.00;
+    double T = 1000.00;
 
     while(1)
     {
-        volatile char *oled = (char *) 0x1000;
+        volatile char *oled = (char *) 0x1200;
         oled[0] = "f";
-        _delay_ms(T);
+      
+
+        //_delay_ms(T);
         //JOYSTICK_Output();
         //uint8_t value;
         //value = JOYCON_X_Axis();
