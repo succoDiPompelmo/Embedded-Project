@@ -16,14 +16,14 @@
 #include "joystick.h"
 #include "sram_interface.h"
 
+volatile char *OLED_cmd = (char *) 0x1000;
+volatile char *OLED_data = (char *) 0x1200;
+
 void OLED_Init()
 {
-  //Enable the external memory interface/4 bits address
+    //Enable the external memory interface/4 bits address
 	MCUCR |= (1<<SRE);
 	SFIOR |= (1<<XMM2);
-
-  //Address for the OLED commands
-  volatile char *OLED_cmd = (char *) 0x1000;
 
 	//Setup the OLED display
 
@@ -75,31 +75,40 @@ void OLED_Init()
 	//display on
 	*OLED_cmd = 0xAF;
 
-  //Set page start address
-	//*OLED_cmd = 0xB0;
+    //Set page start address
+	*OLED_cmd = 0xB0;
 	//Set lower column start address
-	//*OLED_cmd = 0x00;
+	*OLED_cmd = 0x00;
 	//Set higher column start address
-	//*OLED_cmd = 0x10;
+	*OLED_cmd = 0x10;
 }
 
 int main()
 {
+    // INVERTIRE RAM bgbbgjhvbjuhvbjuhvjuvyuvyuvyjuvyuvyuvyuvyuv
     USART_Init (MYBURR);
     led_init();
     MCUCR |= (1 << SRE);
     SFIOR |= (1 << XMM2);
+    OLED_Init();
     fdevopen(*USART_Transmit, *USART_Receive);
     double T = 1000.00;
 
     while(1)
     {
-        //volatile char *oled = (char *) 0x1200;
+        //volatile char *oled = (char *) 0x1800;
         //oled[0] = "f";
-
+        //printf("CIAO");
+        //_delay_ms(T);
+        *OLED_data = 0xFF;
+        //_delay_ms(T);
 
         //_delay_ms(T);
         //JOYSTICK_Output();
+
+        //OLED_Init();
+
+        //OLED_cmd[0] = 0xF0;
         //uint8_t value;
         //value = JOYCON_X_Axis();
         //printf("%02X\n\r", value);
