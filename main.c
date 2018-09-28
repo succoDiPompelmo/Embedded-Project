@@ -21,10 +21,6 @@ volatile char *OLED_data = (char *) 0x1200;
 
 void OLED_Init()
 {
-    //Enable the external memory interface/4 bits address
-	MCUCR |= (1<<SRE);
-	SFIOR |= (1<<XMM2);
-
 	//Setup the OLED display
 
 	//display off
@@ -85,22 +81,36 @@ void OLED_Init()
 
 int main()
 {
-    // INVERTIRE RAM bgbbgjhvbjuhvbjuhvjuvyuvyuvyjuvyuvyuvyuvyuv
     USART_Init (MYBURR);
-    led_init();
+    //led_init();
+
+    //Enable the external memory interface/4 bits address
     MCUCR |= (1 << SRE);
     SFIOR |= (1 << XMM2);
+
     OLED_Init();
+
     fdevopen(*USART_Transmit, *USART_Receive);
-    double T = 1000.00;
+    double T = 100.00;
 
     while(1)
     {
-        //volatile char *oled = (char *) 0x1800;
-        //oled[0] = "f";
+        volatile char *oled = (char *) 0x1200;
+
+        for (size_t i = 0; i < 128; i++) {
+            oled[0] = 0xFF;
+        }
+        for (size_t i = 0; i < 128; i++) {
+            oled[0] = 0x00;
+        }
+        _delay_ms(T);
+
         //printf("CIAO");
         //_delay_ms(T);
-        *OLED_data = 0xFF;
+        //*OLED_cmd = 0xFF;
+        //*OLED_cmd = 0xFF;
+        //OLED_data[0] = 0x00;
+        //*OLED_cmd = 0x41;
         //_delay_ms(T);
 
         //_delay_ms(T);
