@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <avr/io.h>
 #include <stdlib.h>
+#include <avr/pgmspace.h>
+#include <stdbool.h>
 
 #define F_CPU 4915200UL
 #include <util/delay.h>
@@ -15,68 +17,33 @@
 #include "led.h"
 #include "joystick.h"
 #include "sram_interface.h"
+#include "oled_interface.h"
+//#include "fonts.h
 
-volatile char *OLED_cmd = (char *) 0x1000;
-volatile char *OLED_data = (char *) 0x1200;
+volatile char *oled_data = (char *) 0x1200;
+bool treshold = true;
 
-void OLED_Init()
+void change_selection(void* menu)
 {
-	//Setup the OLED display
-
-	//display off
-	*OLED_cmd = 0xAE;
-	//segment remap
-	*OLED_cmd = 0xA1;
-
-	//common pads hardware: alternative
-	*OLED_cmd = 0xDA;
-	*OLED_cmd = 0x12;
-
-	//common output scan direction:com63~com0
-	*OLED_cmd = 0xC8;
-
-	//multiplex ration mode:63
-	*OLED_cmd = 0xA8;
-	*OLED_cmd = 0x3F;
-
-	//display divide ratio/osc. freq. mode
-	*OLED_cmd = 0xD5;
-	*OLED_cmd = 0x80;
-
-	//contrast control
-	*OLED_cmd = 0x81;
-	*OLED_cmd = 0x50;
-
-	//set pre-charge period
-	*OLED_cmd = 0xD9;
-	*OLED_cmd = 0x21;
-
-	//set Memory Addressing Mode
-	*OLED_cmd = 0x20;
-	*OLED_cmd = 0x00;
-
-	//VCOM deselect level mode
-	*OLED_cmd = 0xDB;
-	*OLED_cmd = 0x30;
-
-	//master configuration
-	*OLED_cmd = 0xAD;
-	*OLED_cmd = 0x00;
-
-	//out follows RAM content
-	*OLED_cmd = 0xA4;
-
-	//set normal display
-	*OLED_cmd = 0xA6;
-	//display on
-	*OLED_cmd = 0xAF;
-
-    //Set page start address
-	*OLED_cmd = 0xB0;
-	//Set lower column start address
-	*OLED_cmd = 0x00;
-	//Set higher column start address
-	*OLED_cmd = 0x10;
+    printf("%d\n", check_Y_Axis());
+    if(check_Y_Axis() == 1 && treshold)
+    {
+        int i = where_is_one(menu);
+        if(i - 1 >= 0)
+        {
+            i = i - 1;
+        }
+        else
+        {
+            i = menu_length(menu) - 1;
+        }
+        set_selection(menu, i);
+        treshold = false;
+    }
+    _delay_ms(100);
+    if (check_Y_Axis() == -1 && !treshold) {
+        treshold = true;
+    }
 }
 
 int main()
@@ -88,28 +55,45 @@ int main()
     MCUCR |= (1 << SRE);
     SFIOR |= (1 << XMM2);
 
+    DDRD &= ~(1 << PD2);
+
     OLED_Init();
+
+    void* menu = Menu_Init();
+
+    Menu_Print(menu);
 
     fdevopen(*USART_Transmit, *USART_Receive);
     double T = 100.00;
 
     while(1)
     {
-        volatile char *oled = (char *) 0x1200;
-
-        for (size_t i = 0; i < 128; i++) {
-            oled[0] = 0xFF;
-        }
-        for (size_t i = 0; i < 128; i++) {
-            oled[0] = 0x00;
-        }
         _delay_ms(T);
 
+        print_selection(menu);
+
+        //JOYSTICK_Output();
+        change_selection(menu);
+
+        // Check if button is pressed
+        if(!(PIND & (1 << PD2)))
+        {
+            int i = where_is_one(menu);
+            oled_clear();
+            oled_reset();
+            char str[2] = "\0";
+            char c = i + '0';
+            str[0] = c;
+            printf("%c\n", c);
+            oled_print(str, 1);
+            _delay_ms(1000.0);
+            Menu_Print(menu);
+        }
+        //Menu_Print(menu);
+        //oled_clear();
         //printf("CIAO");
         //_delay_ms(T);
-        //*OLED_cmd = 0xFF;
-        //*OLED_cmd = 0xFF;
-        //OLED_data[0] = 0x00;
+        //oled_data[0] = 0xFF;
         //*OLED_cmd = 0x41;
         //_delay_ms(T);
 
