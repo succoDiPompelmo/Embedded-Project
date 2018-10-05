@@ -1,15 +1,23 @@
 #include <stdio.h>
 #include <avr/io.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <avr/pgmspace.h>
 
+#define F_CPU 4915200UL
+#include <util/delay.h>
+
 #include "fonts.h"
 
+#include "joystick.h"
 #include "oled_interface.h"
 
 volatile char *OLED_cmd = (char *) 0x1000;
 volatile char *OLED_data = (char *) 0x1200;
+
+bool treshold_UP = true;
+bool treshold_DOWN = true;
 
 typedef struct menu_item {
     int selection;
@@ -284,9 +292,59 @@ void clear_menu()
 
 void button_pressed(void* menu)
 {
-    int i = where_is_one(menu);
-    oled_clear();
-    oled_reset();
-    char c = i + '0';
-    oled_print(c, 1);
+  // Check if button is pressed
+  if(!(PIND & (1 << PD2)))
+  {
+      int i = where_is_one(menu);
+      oled_clear();
+      oled_reset();
+      char str[2] = "\0";
+      char c = i + '0';
+      str[0] = c;
+      printf("%c\n", c);
+      oled_print(str, 1);
+      _delay_ms(1000.0);
+      Menu_Print(menu);
+  }
+}
+
+void change_selection(void* menu)
+{
+    if(check_Y_Axis_UP() == 1 && treshold_UP)
+    {
+        int i = where_is_one(menu);
+        if(i - 1 >= 0)
+        {
+            i = i - 1;
+        }
+        else
+        {
+            i = menu_length(menu) - 1;
+        }
+        set_selection(menu, i);
+        treshold_UP = false;
+    }
+    _delay_ms(100);
+    if (check_Y_Axis_DOWN() == -1 && !treshold_UP) {
+        treshold_UP = true;
+    }
+
+  if(check_Y_Axis_DOWN() == 1 && treshold_DOWN)
+  {
+      int i = where_is_one(menu);
+      if(i - 1 >= 0)
+      {
+          i = i - 1;
+      }
+      else
+      {
+          i = menu_length(menu) - 1;
+      }
+      set_selection(menu, i);
+      treshold_DOWN = false;
+  }
+  _delay_ms(100);
+  if (check_Y_Axis_DOWN() == -1 && !treshold_DOWN) {
+      treshold_DOWN = true;
+  }
 }

@@ -24,7 +24,8 @@ uint8_t SLIDEBAR_Right();
  */
 uint8_t SLIDEBAR_Left();
 
-int check_Y_Axis();
+int check_Y_Axis_UP();
 
+int check_Y_Axis_DOWN();
 
 void JOYSTICK_Output();

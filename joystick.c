@@ -13,11 +13,19 @@ uint8_t JOYCON_X_Axis()
     //printf("X value : %02X  ", read_value);
 }
 
-int check_Y_Axis()
+int check_Y_Axis_UP()
 {
     volatile uint8_t selection = JOYCON_Y_Axis();
     if (selection > 0xF2) return 1;
     if (selection < 0x88) return -1;
+    return 0;
+}
+
+int check_Y_Axis_DOWN()
+{
+    volatile uint8_t selection = JOYCON_Y_Axis();
+    if (selection < 0x08) return 1;
+    if (selection > 0x72) return -1;
     return 0;
 }
 
