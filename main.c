@@ -20,6 +20,7 @@
 #include "oled_interface.h"
 #include "SPI.h"
 #include "can.h"
+#include "MCP2515.h"
 //#include "fonts.h"
 
 //volatile char *oled_data = (char *) 0x1200;
@@ -27,6 +28,7 @@
 int main()
 {
     USART_Init (MYBURR);
+    fdevopen(*USART_Transmit, *USART_Receive);
     //led_init();
 
     //Enable the external memory interface/4 bits address
@@ -41,16 +43,16 @@ int main()
 
     //Menu_Print(menu);
 
-    SPI_MasterInit();
+
 
     /* Set MOSI and SCK output, all others input */
     //DDRB = (1<<PB5)|(1<<PB7);
     /* Enable SPI, Master, set clock rate fck/16 */
     //SPCR = (1<<SPE)|(1<<MSTR)|(1<<SPR0);
-
+    SPI_MasterInit();
     mcp2515_init();
 
-    fdevopen(*USART_Transmit, *USART_Receive);
+
     double T = 100.00;
 
     while(1)
@@ -59,16 +61,19 @@ int main()
         _delay_ms(T);
         //print_selection(menu);
 
-        printf("CIAO - 1");
+        //printf(" CIAO-1 ");
 
         //JOYSTICK_Output();
         //change_selection(menu);
 
-        SPI_MasterTransmit(0b01010101);
+        //SPI_MasterTransmit(0b01010101);
+
+        //mcp2515_init();
 
         //button_pressed(menu);
         //oled_clear();
-        printf("CIAO - 2");
+        printf(" CIAO-2 %x \n\r",mcp2515_read(MCP_CANSTAT));
+        //mcp2515_read(0b00001110);
         //_delay_ms(T);
         //oled_data[0] = 0xFF;
         //*OLED_cmd = 0x41;
