@@ -32,16 +32,15 @@ int main()
     //led_init();
 
     //Enable the external memory interface/4 bits address
-    //MCUCR |= (1 << SRE);
-    //SFIOR |= (1 << XMM2);
+    MCUCR |= (1 << SRE);
+    SFIOR |= (1 << XMM2);
 
-    //DDRD &= ~(1 << PD2);
+    DDRD &= ~(1 << PD2);
 
-    //OLED_Init();
+    void* menu = Menu_Init();
 
-    //void* menu = Menu_Init();
-
-    //Menu_Print(menu);
+    OLED_Init();
+    Menu_Print(menu);
 
 
 
@@ -53,18 +52,18 @@ int main()
     mcp2515_init();
 
 
-    double T = 100.00;
+    double T = 10.00;
 
     while(1)
     {
 
         _delay_ms(T);
-        //print_selection(menu);
+        print_selection(menu);
 
         //printf(" CIAO-1 ");
 
         //JOYSTICK_Output();
-        //change_selection(menu);
+        change_selection(menu);
 
         //SPI_MasterTransmit(0b01010101);
 
@@ -72,17 +71,17 @@ int main()
 
         //button_pressed(menu);
         //oled_clear();
-        printf(" CIAO-2 %x \n\r",mcp2515_read(MCP_CANSTAT));
+        printf(" CIAO-1 %x \n\r",mcp2515_read(MCP_CANSTAT));
         //mcp2515_read(0b00001110);
         //_delay_ms(T);
         //oled_data[0] = 0xFF;
-        //*OLED_cmd = 0x41;
+        //OLED_cmd = 0x41;
         //_delay_ms(T);
 
         //_delay_ms(T);
         //JOYSTICK_Output();
 
-        //OLED_Init();
+
 
         //OLED_cmd[0] = 0xF0;
         //uint8_t value;

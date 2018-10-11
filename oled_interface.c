@@ -143,7 +143,7 @@ void OLED_Init()
 
 void oledSendData(char c)
 {
-  *OLED_data = c
+  *OLED_data = c;
 }
 
 void oledPrintChar(char c)
