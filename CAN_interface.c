@@ -1,0 +1,82 @@
+#include <stdbool.h>
+#include <avr/interrupt.h>
+#include <avr/io.h>
+#include <util/delay.h>
+
+#include "can.h"
+#include "MCP2515.h"
+#include "CAN_interface.h"
+
+
+#define test_bit(reg, bit) (reg & (1 << bit))
+
+bool received = false;
+
+void CAN_Init()
+{
+  mcp2515_init();
+
+  // RX0 - Turn masks/filter off, rollover disabled
+  mcp2515_bit_modify(MCP_RXB0CTRL, 0b01100100, 0xFF);
+
+  // Enable loop-back mode
+  mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_LOOPBACK);
+
+  // Enable interrupt when message is received (RX0IE = 1)
+  mcp2515_bit_modify(MCP_CANINTE, 0x01, 1);
+}
+
+void CAN_Trasmission()
+{
+  // Set message ID
+  mcp2515_write_register(MCP_TXB0SIDH, 0x03);
+  mcp2515_write_register(MCP_TXB0SIDL, 0x01);
+
+  // Set data length
+  mcp2515_write_register(MCP_TXB0DLC, 0x01);
+
+  // Set data bytes
+  mcp2515_write_register(MCP_TXB0D0, 0xFF);
+
+  mcp2515_request_to_send();
+}
+
+void CAN_Receive()
+{
+  // Message data
+  uint8_t data;
+
+  if(received)
+  {
+    // Get message ID
+    data = mcp2515_read(MCP_RXB0SIDH);
+    data = mcp2515_read(MCP_RXB0SIDL);
+
+    // Get data length
+    data = mcp2515_read(MCP_RXB0DLC);
+
+    data = mcp2515_read(MCP_RXB0D0);
+
+    received = false;
+  }
+}
+
+int CAN_Trasmission_Complete()
+{
+  // Check if the trasmission of buffer TX0 is finished (TXREQ = 0)
+  if (test_bit(mcp2515_read(MCP_TXB0CTRL), 3))
+  {
+    return 0;
+  }
+  else {
+    return 1;
+  }
+}
+
+// INterrupt service routine for CAN bus
+ISR(INT0_vect)
+{
+  _delay_ms(10);
+  mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
+  received = true;
+}
