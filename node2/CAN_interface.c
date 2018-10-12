@@ -7,20 +7,41 @@
 #include "MCP2515.h"
 #include "CAN_interface.h"
 
-
 #define test_bit(reg, bit) (reg & (1 << bit))
 
 bool received = false;
+
+
+typedef struct message {
+  uint8_t IDH;
+  uint8_t IDL;
+  uint8_t data;
+  uint8_t length;
+} message;
+
+struct message l = {0x01, 0x00, 0x12, 0x01};
+
+void setData(uint8_t data)
+{
+  l.data = data;
+}
+
 
 void CAN_Init()
 {
   mcp2515_init();
 
+  printf("%s\n", "QUI - 1");
+
   // RX0 - Turn masks/filter off, rollover disabled
   mcp2515_bit_modify(MCP_RXB0CTRL, 0b01100100, 0xFF);
 
+  printf("%s\n", "QUI - 2");
+
   // Enable loop-back mode
   mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_LOOPBACK);
+
+  printf("%s\n", "QUI - 3");
 
   // Enable interrupt when message is received (RX0IE = 1)
   mcp2515_bit_modify(MCP_CANINTE, 0x01, 1);
@@ -28,20 +49,23 @@ void CAN_Init()
 
 void CAN_Trasmission()
 {
-  // Set message ID
-  mcp2515_write_register(MCP_TXB0SIDH, 0x03);
-  mcp2515_write_register(MCP_TXB0SIDL, 0x01);
+  if (CAN_Trasmission_Complete())
+  {
+    // Set message ID
+    mcp2515_write_register(MCP_TXB0SIDH, l.IDH);
+    mcp2515_write_register(MCP_TXB0SIDL, l.IDL);
 
-  // Set data length
-  mcp2515_write_register(MCP_TXB0DLC, 0x01);
+    // Set data length
+    mcp2515_write_register(MCP_TXB0DLC, l.length);
 
-  // Set data bytes
-  mcp2515_write_register(MCP_TXB0D0, 0xFF);
+    // Set data bytes
+    mcp2515_write_register(MCP_TXB0D0, l.data);
 
-  mcp2515_request_to_send();
+    mcp2515_request_to_send();
+  }
 }
 
-void CAN_Receive()
+uint8_t CAN_Receive()
 {
   // Message data
   uint8_t data;
@@ -58,6 +82,8 @@ void CAN_Receive()
     data = mcp2515_read(MCP_RXB0D0);
 
     received = false;
+
+    return data;
   }
 }
 
@@ -74,7 +100,7 @@ int CAN_Trasmission_Complete()
 }
 
 // INterrupt service routine for CAN bus
-ISR(INT0_vect)
+ISR(INT1_vect)
 {
   _delay_ms(10);
   mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
