@@ -5,8 +5,9 @@
 // corresponding function for coloumn and page and this must be done everytime
 // you want to print something.
 
-bool treshold_UP = true;
+bool treshold_UP   = true;
 bool treshold_DOWN = true;
+int  Menu_level    = 0;
 
 typedef struct menu_item {
     int selection;
@@ -240,5 +241,30 @@ void change_selection(void* menu)
   _delay_ms(100);
   if (check_Y_Axis_DOWN() == -1 && !treshold_DOWN) {
       treshold_DOWN = true;
+  }
+}
+
+node* level_selection(void* menu_top)
+{
+  node* current = (node*) menu_top;
+  if (Menu_level == 0) return menu_top;
+  else {
+    int level = Menu_level;
+    node* current = (node*) menu_top;
+
+    while (level > 0)
+    {
+      // A for loop in this case is better
+      int i = where_is_one(menu_top);
+
+      while (i != 0)
+      {
+        current = current->next;
+        i--;
+      }
+
+      current = current->down;
+    }
+    return current;
   }
 }

@@ -8,3 +8,7 @@
  * @brief Initialize UART driver; necessary to call only once
  */
 void SRAM_test(void);
+
+uint8_t SRAM_read(int offset);
+
+void SRAM_write(int offset, uint8_t value);
