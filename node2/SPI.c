@@ -2,21 +2,24 @@
 
 #include "SPI.h"
 
-#define MOSI PB2;
-#define SS   PB0;
-#define MISO PB3;
-#define SCK  PB1;
+#define SPI_SS   DDB0
+#define SPI_SCK  DDB1
+#define SPI_MOSI DDB2
+#define SPI_MISO DDB3
 
 void SPI_MasterInit()
 {
   /* Set MOSI, SCK and !SS output, all others input */
-  DDRB = (1 << MOSI)|(1 << SCK)|(1 << SS);
+  DDRB |= (1 << SPI_MOSI)|(1 << SPI_SCK);
+
+  // Set MISO as input pin
+  DDRB &=  ~(1 << SPI_MISO);
 
   /* Enable SPI, Master, set clock rate fck/16 */
   SPCR = (1 << SPE)|(1 << MSTR)|(1 << SPR0);
 
   /* Set SS high, deselect CAN-controller */
-  PORTB |= (1 << SS);
+  PORTB |= (1 << PB0);
 }
 
 void SPI_MasterTransmit(char cData)
@@ -31,12 +34,13 @@ void SPI_MasterTransmit(char cData)
   // first by reading the SPSR register with SPIF set, loop above, and then accesing the SPI data
   // data register, this line.
   cData = SPDR;
+  printf("Data received is %02x\n\r", cData);
 }
 
 void SPI_SlaveInit()
 {
   /* Set MISO output, all others input */
-  DDRB = (1 << MISO);
+  DDRB = (1 << PB3);
   /* Enable SPI */
   SPCR = (1 << SPE);
 }

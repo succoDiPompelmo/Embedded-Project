@@ -18,11 +18,9 @@ int main()
   USART_Init (MYBURR);
   fdevopen(*USART_Transmit, *USART_Receive);
 
-  EIMSK |= (1 << INT0);
+  //EIMSK |= (1 << INT0);
 
-  sei();
-
-  printf("%s\n", "QUI");
+  //sei();
 
   CAN_Init();
 
@@ -30,16 +28,14 @@ int main()
   {
     uint8_t value;
 
-    printf("%s\n", "QUI");
+    //CAN_Trasmission();
 
-    CAN_Trasmission();
+    _delay_ms(1000.0);
 
-    _delay_ms(10.0);
+    //value = CAN_Receive();
 
-    value = CAN_Receive();
+    //printf("%02x\n\r", value);
 
-    printf("%02x\n\r", value);
-
-    setData(0x97);
+    //setData(0x97);
   }
 }

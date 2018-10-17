@@ -31,17 +31,11 @@ void CAN_Init()
 {
   mcp2515_init();
 
-  printf("%s\n", "QUI - 1");
-
   // RX0 - Turn masks/filter off, rollover disabled
   mcp2515_bit_modify(MCP_RXB0CTRL, 0b01100100, 0xFF);
 
-  printf("%s\n", "QUI - 2");
-
   // Enable loop-back mode
   mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_LOOPBACK);
-
-  printf("%s\n", "QUI - 3");
 
   // Enable interrupt when message is received (RX0IE = 1)
   mcp2515_bit_modify(MCP_CANINTE, 0x01, 1);
