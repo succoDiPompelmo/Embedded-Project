@@ -10,7 +10,7 @@
 void SPI_MasterInit()
 {
   /* Set MOSI, SCK and !SS output, all others input */
-  DDRB |= (1 << SPI_MOSI)|(1 << SPI_SCK);
+  DDRB |= (1 << SPI_MOSI)|(1 << SPI_SCK)|(1<<PB7)|(1<<PB0);
 
   // Set MISO as input pin
   DDRB &=  ~(1 << SPI_MISO);
@@ -18,8 +18,8 @@ void SPI_MasterInit()
   /* Enable SPI, Master, set clock rate fck/16 */
   SPCR = (1 << SPE)|(1 << MSTR)|(1 << SPR0);
 
-  /* Set SS high, deselect CAN-controller */
-  PORTB |= (1 << PB0);
+  /* Set SS high, desSanntelect CAN-controller */
+  PORTB |= (1 << PB7);
 }
 
 void SPI_MasterTransmit(char cData)
@@ -34,7 +34,6 @@ void SPI_MasterTransmit(char cData)
   // first by reading the SPSR register with SPIF set, loop above, and then accesing the SPI data
   // data register, this line.
   cData = SPDR;
-  printf("Data received is %02x\n\r", cData);
 }
 
 void SPI_SlaveInit()

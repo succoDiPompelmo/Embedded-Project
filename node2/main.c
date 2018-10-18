@@ -18,9 +18,12 @@ int main()
   USART_Init (MYBURR);
   fdevopen(*USART_Transmit, *USART_Receive);
 
-  //EIMSK |= (1 << INT0);
+  EIMSK |= (1 << INT1);
 
-  //sei();
+  // We want PB0 as output
+  DDRB |= (1 << PB0);
+
+  sei();
 
   CAN_Init();
 
@@ -28,14 +31,15 @@ int main()
   {
     uint8_t value;
 
-    //CAN_Trasmission();
+    CAN_Trasmission();
 
     _delay_ms(1000.0);
 
-    //value = CAN_Receive();
+    value = CAN_Receive();
 
-    //printf("%02x\n\r", value);
+    printf("%02x\n\r", value);
+    
 
-    //setData(0x97);
+    setData(0x97);
   }
 }

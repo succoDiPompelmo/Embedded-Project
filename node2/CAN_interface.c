@@ -93,10 +93,11 @@ int CAN_Trasmission_Complete()
   }
 }
 
-// INterrupt service routine for CAN bus
+// Interrupt service routine for CAN bus
 ISR(INT1_vect)
 {
-  _delay_ms(10);
+  _delay_ms(1000);
+  printf("%s\n", "INTERRUPT!");
   mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
   received = true;
 }
