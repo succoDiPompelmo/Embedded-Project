@@ -21,6 +21,9 @@ int main()
   // We want PB0 as output
   DDRB |= (1 << PB0);
 
+  DDRD &= ~(1 << PD1);
+  cli();
+  EICRA |= (1 << ISC11);
   EIMSK |= (1 << INT1);
 
   sei();
@@ -29,17 +32,17 @@ int main()
 
   while(1)
   {
-    uint8_t value;
+    volatile uint8_t value;
 
     CAN_Trasmission();
 
     _delay_ms(1000.0);
 
-    value = CAN_Receive();
+    //value = CAN_Receive();
 
-    printf("%02x\n\r", value);
+    //printf("VALUE : %02x\n\r", value);
 
 
-    setData(0x97);
+    //setData(0x97);
   }
 }

@@ -2,7 +2,7 @@
 
 #include "SPI.h"
 
-#define SPI_SS   DDB0
+#define SPI_SS   DDB7
 #define SPI_SCK  DDB1
 #define SPI_MOSI DDB2
 #define SPI_MISO DDB3
@@ -10,7 +10,7 @@
 void SPI_MasterInit()
 {
   /* Set MOSI, SCK and !SS output, all others input */
-  DDRB |= (1 << SPI_MOSI)|(1 << SPI_SCK)|(1<<PB7)|(1<<PB0);
+  DDRB |= (1 << SPI_MOSI)|(1 << SPI_SCK)|(1<<PB7);
 
   // Set MISO as input pin
   DDRB &=  ~(1 << SPI_MISO);

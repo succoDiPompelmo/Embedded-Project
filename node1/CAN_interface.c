@@ -35,7 +35,7 @@ void CAN_Init()
   mcp2515_bit_modify(MCP_RXB0CTRL, 0b01100100, 0xFF);
 
   // Enable loop-back mode
-  mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_LOOPBACK);
+  mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_NORMAL);
 
   // Enable interrupt when message is received (RX0IE = 1)
   mcp2515_bit_modify(MCP_CANINTE, 0x01, 1);
