@@ -1,5 +1,5 @@
-#ifndef __MCP2515_H
-#define __MCP2515_H
+#ifndef __MCP2551_H
+#define __MCP2551_H
 
 /*
 mcp2515.h
