@@ -77,9 +77,6 @@ int main()
         button_pressed(menu);
         //oled_clear();
 
-        //printf(" CIAO-1 %x \n\r",mcp2515_read(MCP_CANSTAT));
-
-
         //_delay_ms(T);
         //JOYSTICK_Output();
     }
