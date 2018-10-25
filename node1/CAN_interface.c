@@ -19,7 +19,7 @@ typedef struct message {
   uint8_t length;
 } message;
 
-struct message l = {0x01, 0x00, 0x12, 0x01};
+struct message l = {0x01, 0x00, 0x20, 0x01};
 
 void setData(uint8_t data)
 {
@@ -62,22 +62,23 @@ void CAN_Trasmission()
 uint8_t CAN_Receive()
 {
   // Message data
-  uint8_t data;
+  uint8_t data[4];
 
   if(received)
   {
     // Get message ID
-    data = mcp2515_read(MCP_RXB0SIDH);
-    data = mcp2515_read(MCP_RXB0SIDL);
+    data[0] = mcp2515_read(MCP_RXB0SIDH);
+    data[1] = mcp2515_read(MCP_RXB0SIDL);
 
     // Get data length
-    data = mcp2515_read(MCP_RXB0DLC);
+    data[2] = mcp2515_read(MCP_RXB0DLC);
 
-    data = mcp2515_read(MCP_RXB0D0);
+    data[3] = mcp2515_read(MCP_RXB0D0);
 
     received = false;
+    mcp2515_bit_modify(MCP_CANINTF, 0x01, 0); //write what it does
 
-    return data;
+    return data[3];
   }
 }
 
@@ -96,7 +97,7 @@ int CAN_Trasmission_Complete()
 // INterrupt service routine for CAN bus
 ISR(INT1_vect)
 {
-  _delay_ms(10);
-  mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
+  //_delay_ms(10000);
+  printf("%s\n\r", "INTERRUPT node1!");
   received = true;
 }

@@ -41,8 +41,8 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_RXF5SIDL	0x19
 #define MCP_RXF5EID8	0x1A
 #define MCP_RXF5EID0	0x1B
-#define MCP_TEC			0x1C
-#define MCP_REC			0x1D
+#define MCP_TEC			  0x1C
+#define MCP_REC			  0x1D
 #define MCP_RXM0SIDH	0x20
 #define MCP_RXM0SIDL	0x21
 #define MCP_RXM0EID8	0x22
@@ -51,12 +51,12 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_RXM1SIDL	0x25
 #define MCP_RXM1EID8	0x26
 #define MCP_RXM1EID0	0x27
-#define MCP_CNF3		0x28
-#define MCP_CNF2		0x29
-#define MCP_CNF1		0x2A
+#define MCP_CNF3		  0x28
+#define MCP_CNF2		  0x29
+#define MCP_CNF1		  0x2A
 #define MCP_CANINTE		0x2B
 #define MCP_CANINTF		0x2C
-#define MCP_EFLG		0x2D
+#define MCP_EFLG		  0x2D
 #define MCP_TXB0CTRL	0x30
 #define MCP_TXB1CTRL	0x40
 #define MCP_TXB2CTRL	0x50
@@ -76,9 +76,9 @@ Copyright 2003 Kimberly Otten Software Consulting
 
 // Define SPI Instruction Set
 
-#define MCP_WRITE		0x02
+#define MCP_WRITE		  0x02
 
-#define MCP_READ		0x03
+#define MCP_READ		  0x03
 
 #define MCP_BITMOD		0x05
 
@@ -91,14 +91,14 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_RTS_TX2		0x84
 #define MCP_RTS_ALL		0x87
 
-#define MCP_READ_RX0	0x90
-#define MCP_READ_RX1	0x94
+#define MCP_READ_RX0	  0x90
+#define MCP_READ_RX1	  0x94
 
 #define MCP_READ_STATUS	0xA0
 
-#define MCP_RX_STATUS	0xB0
+#define MCP_RX_STATUS	  0xB0
 
-#define MCP_RESET		0xC0
+#define MCP_RESET		    0xC0
 
 
 // CANCTRL Register Values
@@ -108,16 +108,16 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MODE_LOOPBACK   0x40
 #define MODE_LISTENONLY 0x60
 #define MODE_CONFIG     0x80
-#define MODE_POWERUP	0xE0
-#define MODE_MASK		0xE0
+#define MODE_POWERUP	  0xE0
+#define MODE_MASK		    0xE0
 #define ABORT_TX        0x10
-#define MODE_ONESHOT	0x08
-#define CLKOUT_ENABLE	0x04
+#define MODE_ONESHOT	  0x08
+#define CLKOUT_ENABLE	  0x04
 #define CLKOUT_DISABLE	0x00
-#define CLKOUT_PS1		0x00
-#define CLKOUT_PS2		0x01
-#define CLKOUT_PS4		0x02
-#define CLKOUT_PS8		0x03
+#define CLKOUT_PS1	   	0x00
+#define CLKOUT_PS2		  0x01
+#define CLKOUT_PS4		  0x02
+#define CLKOUT_PS8		  0x03
 
 
 // CNF1 Register Values
@@ -130,16 +130,16 @@ Copyright 2003 Kimberly Otten Software Consulting
 
 // CNF2 Register Values
 
-#define BTLMODE			0x80
+#define BTLMODE			    0x80
 #define SAMPLE_1X       0x00
 #define SAMPLE_3X       0x40
 
 
 // CNF3 Register Values
 
-#define SOF_ENABLE		0x80
-#define SOF_DISABLE		0x00
-#define WAKFIL_ENABLE	0x40
+#define SOF_ENABLE		  0x80
+#define SOF_DISABLE		  0x00
+#define WAKFIL_ENABLE	  0x40
 #define WAKFIL_DISABLE	0x00
 
 
@@ -160,8 +160,26 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_TXB0DLC  0x35
 #define MCP_TXB0D0   0x36
 
+#define MCP_TXB0D1   0x37
+#define MCP_TXB0D2   0x38
+#define MCP_TXB0D3   0x39
+#define MCP_TXB0D4   0x3A
+#define MCP_TXB0D5   0x3B
+#define MCP_TXB0D6   0x3C
+#define MCP_TXB0D7   0x3D
+
+
 // CAN RECEPTION
 #define MCP_RXB0D0   0x66
+
+#define MCP_RXB0D1   0x67
+#define MCP_RXB0D2   0x68
+#define MCP_RXB0D3   0x69
+#define MCP_RXB0D4   0x6A
+#define MCP_RXB0D5   0x6B
+#define MCP_RXB0D6   0x6C
+#define MCP_RXB0D7   0x6D
+
 #define MCP_RXB0SIDL 0x62
 #define MCP_RXB0DLC  0x65
 

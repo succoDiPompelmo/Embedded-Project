@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <avr/interrupt.h>
 
+
 #define F_CPU 4915200UL
 #include <util/delay.h>
 
@@ -20,12 +21,12 @@
 #include "sram_interface.h"
 #include "oled_interface.h"
 #include "CAN_interface.h"
-//#include "fonts.h"
 
-//volatile char *oled_data = (char *) 0x1200;
+volatile char *OLED_DATA = (char *) 0x1200;
 
 int main()
 {
+    _delay_ms(100);
     USART_Init (MYBURR);
     fdevopen(*USART_Transmit, *USART_Receive);
     //led_init();
@@ -35,46 +36,51 @@ int main()
     SFIOR |= (1 << XMM2);
 
     DDRD &= ~(1 << PD2);
-
+    cli();
+    MCUCR |= (1<<ISC11);
     GICR |= (1 << INT1);
 
-    sei();
 
-    void* menu = Menu_Init();
+
+    //void* menu = Menu_Init();
 
     OLED_Init();
-    Menu_Print(menu);
+    //Menu_Print(menu);
     CAN_Init();
 
     double T = 10.00;
+
+    sei();
 
     while(1)
     {
 
         uint8_t value;
 
-        _delay_ms(T);
-        print_selection(menu);
+        _delay_ms(100.0);
+        //print_selection(menu);
 
-        //printf(" CIAO-1 \n\r");
         CAN_Trasmission();
 
-        _delay_ms(1000.0);
+        *OLED_DATA = 0xFF;
 
-        value = CAN_Receive();
+        //value = CAN_Receive();
+        //printf("%02x\n\r ", value);
 
-        printf("%02x\n\r", value);
-
-        setData(0x97);
+        setData(JOYCON_X_Axis());
 
         //JOYSTICK_Output();
-        change_selection(menu);
+        //change_selection(menu);
+
+        //test();
+
+        //SRAM_test();
 
         //SPI_MasterTransmit(0b01010101);
 
         //mcp2515_init();
 
-        button_pressed(menu);
+        //button_pressed(menu);
         //oled_clear();
 
         //_delay_ms(T);

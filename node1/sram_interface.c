@@ -24,21 +24,29 @@ void SRAM_test(void)
             printf("Write phase error: ext_ram[%4d] = %02X (should be %02X)\n\r", i, retreived_value, some_value);
             write_errors++;
         }
-}
-    // Retrieval phase: Check that no values were changed during or after the write phase
-    srand(seed);    // reset the PRNG to the state it had before the write phase
-    for (uint16_t i = 0; i < ext_ram_size; i++) {
-        uint8_t some_value = rand();
-        uint8_t retreived_value = ext_ram[i];
-        if (retreived_value != some_value) {
-            printf("Retrieval phase error: ext_ram[%4d] = %02X (should be %02X)\n", i, retreived_value, some_value);
-            retrieval_errors++;
-        }
-}
+      }
     printf("SRAM test completed with %4d errors in write phase and %4d errors in retrieval phase\n\n\r", write_errors, retrieval_errors);
     if (write_errors == 0) {
         led_turn_on();
         _delay_ms(T);
         led_turn_off();
     }
+}
+
+void test()
+{
+  double T = 500.00;
+  volatile char *ext_ram = (char *) 0x1800; // Start address for the SRAM
+
+  uint8_t some_value = rand();
+  uint8_t adress = rand();
+  ext_ram[adress] = some_value;
+  _delay_ms(100.0);
+
+  uint8_t retreived_value = ext_ram[adress];
+  printf("%02x\n\r", retreived_value);
+  if (retreived_value != some_value) {
+      printf("Write phase error: ext_ram[%4d] = %02X (should be %02X)\n\r", 0, retreived_value, some_value);
+  }
+
 }

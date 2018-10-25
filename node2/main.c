@@ -34,13 +34,13 @@ int main()
   {
     volatile uint8_t value;
 
-    CAN_Trasmission();
+    //CAN_Trasmission();
 
     _delay_ms(1000.0);
 
-    //value = CAN_Receive();
+    value = CAN_Receive();
 
-    //printf("VALUE : %02x\n\r", value);
+    printf("VALUE : %02x\n\r", value);
 
 
     //setData(0x97);

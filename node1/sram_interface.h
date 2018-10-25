@@ -8,3 +8,5 @@
  * @brief Initialize UART driver; necessary to call only once
  */
 void SRAM_test(void);
+
+void test();

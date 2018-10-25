@@ -36,7 +36,6 @@ void CAN_Init()
 
     // Enable interrupt when message is received (RX0IE = 1)
   mcp2515_bit_modify(MCP_CANINTE, 0b00000001, 1);
-  printf("Test: %02x\n", mcp2515_read(MCP_CANINTE));
   _delay_ms(1);
 
   // Enable loop-back mode
@@ -47,10 +46,8 @@ void CAN_Init()
 
 void CAN_Trasmission()
 {
-  printf("%02x\n\r", mcp2515_read(MCP_TXB0CTRL) & (1 << 3));
   if (CAN_Trasmission_Complete())
   {
-    printf("TRASMISSION: %02x\n\r", mcp2515_read(MCP_TXB0CTRL) & (1 << 3));
     // Set message ID
     mcp2515_write_register(MCP_TXB0SIDH, l.IDH);
     mcp2515_write_register(MCP_TXB0SIDL, l.IDL);
@@ -103,7 +100,7 @@ int CAN_Trasmission_Complete()
 ISR(INT1_vect)
 {
   _delay_ms(1000);
-  printf("%s\n", "INTERRUPT!");
+  printf("%s\n", "INTERRUPT node2!");
   mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
   received = true;
 }
