@@ -11,6 +11,7 @@
 
 #include "uart_interface.h"
 #include "CAN_interface.h"
+#include "pwn.h"
 
 int main()
 {
@@ -21,6 +22,8 @@ int main()
   // We want PB0 as output
   DDRB |= (1 << PB0);
 
+  DDRB |= (1 << PB5);
+
   DDRD &= ~(1 << PD1);
   cli();
   EICRA |= (1 << ISC11);
@@ -29,6 +32,8 @@ int main()
   sei();
 
   CAN_Init();
+
+  pwn_set();
 
   while(1)
   {
@@ -41,7 +46,6 @@ int main()
     value = CAN_Receive();
 
     printf("VALUE : %02x\n\r", value);
-
 
     //setData(0x97);
   }

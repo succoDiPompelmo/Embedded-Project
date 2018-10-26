@@ -23,6 +23,7 @@
 #include "CAN_interface.h"
 
 volatile char *OLED_DATA = (char *) 0x1200;
+volatile char *OLED_CMD = (char *) 0x1000;
 
 int main()
 {
@@ -42,11 +43,11 @@ int main()
 
 
 
-    //void* menu = Menu_Init();
+    void* menu = Menu_Init();
 
     OLED_Init();
-    //Menu_Print(menu);
-    CAN_Init();
+    Menu_Print(menu);
+    //CAN_Init();
 
     double T = 10.00;
 
@@ -57,20 +58,27 @@ int main()
 
         uint8_t value;
 
-        _delay_ms(100.0);
-        //print_selection(menu);
+        print_selection(menu);
 
-        CAN_Trasmission();
-
-        *OLED_DATA = 0xFF;
+        //CAN_Trasmission();
 
         //value = CAN_Receive();
         //printf("%02x\n\r ", value);
 
-        setData(JOYCON_X_Axis());
+        //setData(JOYCON_X_Axis());
+
+        _delay_ms(100);
+
+        //display off
+        //*OLED_CMD = 0xAF;
+
+        _delay_ms(100);
+
+        //display on
+      	//*OLED_CMD = 0xAE;
 
         //JOYSTICK_Output();
-        //change_selection(menu);
+        change_selection(menu);
 
         //test();
 
