@@ -38,28 +38,27 @@ void SRAM_test(void)
   printf("SRAM test completed with %4d errors in write phase and %4d errors in retrieval phase\n\n\r", write_errors, retrieval_errors);
 }
 
-void SRAM_write(int offset, uint8_t value)
+void SRAM_write(int address, uint8_t value)
 {
   volatile char *ext_ram = (char *) EXT_SRAM_ADRESS;
 
-  ext_ram[offset] = value;
+  ext_ram[address] = value;
 }
 
-uint8_t SRAM_read(int offset)
+uint8_t SRAM_read(int address)
 {
   volatile char *ext_ram = (char *) EXT_SRAM_ADRESS;
   uint8_t result;
 
-  result = ext_ram[offset];
+  result = ext_ram[address];
   return result;
 }
 
-void SRAM_write_block()
+void SRAM_write_block(int address, int size, uint8_t* block)
 {
-
-}
-
-void SRAM_read_block()
-{
-  
+  volatile char *ext_ram = (char *) EXT_SRAM_ADRESS;
+  for (int i = 0; i < size)
+  {
+    ext_ram[address + i] = block[i];
+  }
 }

@@ -16,6 +16,8 @@
 volatile char *OLED_cmd = (char *) 0x1000;
 volatile char *OLED_data = (char *) 0x1200;
 
+// We need two variables to say at which adress in the ram we saved the screen
+
 bool treshold_UP = true;
 bool treshold_DOWN = true;
 
@@ -133,9 +135,9 @@ void OLED_Init()
 	//Column end adress
 	*OLED_cmd = 0x7F;
 
-    //Set up page start and end adress
-    *OLED_cmd = 0x22;
-    //Page start adress
+  //Set up page start and end adress
+  *OLED_cmd = 0x22;
+  //Page start adress
 	*OLED_cmd = 0x00;
 	//Page end adress
 	*OLED_cmd = 0x07;
@@ -302,8 +304,8 @@ void clear_selection()
 
 void clear_menu()
 {
-    OLED_setup_column_adress(0x0B, 0x0B);
-    OLED_setup_page_adress(0x00, 0x7F);
+    OLED_setup_column_adress(0x0B, 0x7F);
+    OLED_setup_page_adress(0x00, 0x07);
     for (size_t i = 0; i < 3000; i++) {
         *OLED_data = 0x00;
     }
@@ -366,4 +368,36 @@ void change_selection(void* menu)
   if (check_Y_Axis_DOWN() == -1 && !treshold_DOWN) {
       treshold_DOWN = true;
   }
+}
+
+void clear_sram_selection()
+{
+  for(int i = 0; i < 70; i++)
+  {
+
+  }
+}
+
+void write_sram_selection(char* string, int length, int offset)
+{
+  clear_sram_selection();
+  for(int i = 0; i < 8; i++)
+  {
+    // Write on the sram the start character at the given offset
+  }
+}
+
+void clear_sram_menu()
+{
+
+}
+
+void write_sram_menu()
+{
+
+}
+
+void write_sram_character()
+{
+
 }
