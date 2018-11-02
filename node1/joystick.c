@@ -1,7 +1,7 @@
 #include <util/delay.h>
 #include "joystick.h"
 
-#define T_CONVERSION 0.800
+#define T_CONVERSION 0.200
 
 uint8_t JOYCON_X_Axis()
 {

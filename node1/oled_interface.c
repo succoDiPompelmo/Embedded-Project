@@ -322,7 +322,6 @@ void button_pressed(void* menu)
       str[0] = c;
       printf("%c\n", c);
       oled_print(str, 1);
-      _delay_ms(1000.0);
       Menu_Print(menu);
   }
 }
@@ -343,7 +342,6 @@ void change_selection(void* menu)
         set_selection(menu, i);
         treshold_UP = false;
     }
-    _delay_ms(100);
     if (check_Y_Axis_DOWN() == -1 && !treshold_UP) {
         treshold_UP = true;
     }
@@ -362,7 +360,6 @@ void change_selection(void* menu)
       set_selection(menu, i);
       treshold_DOWN = false;
   }
-  _delay_ms(100);
   if (check_Y_Axis_DOWN() == -1 && !treshold_DOWN) {
       treshold_DOWN = true;
   }

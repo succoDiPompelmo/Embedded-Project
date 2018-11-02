@@ -9,7 +9,7 @@
 
 #define test_bit(reg, bit) (reg & (1 << bit))
 
-bool received = false;
+volatile bool received = false;
 
 
 typedef struct message {
@@ -24,6 +24,13 @@ struct message l = {0x01, 0x00, 0x14, 0x01};
 void setData(uint8_t data)
 {
   l.data = data;
+}
+
+int data_GLOBAL;
+
+int get_DATA_GLOBAL()
+{
+  return data_GLOBAL;
 }
 
 
@@ -64,11 +71,10 @@ void CAN_Trasmission()
 
 uint8_t CAN_Receive()
 {
-  // Message data
-  uint8_t data;
-
   if(received)
   {
+
+    volatile uint8_t data;
     // Get message ID
     data = mcp2515_read(MCP_RXB0SIDH);
     data = mcp2515_read(MCP_RXB0SIDL);
@@ -76,12 +82,14 @@ uint8_t CAN_Receive()
     // Get data length
     data = mcp2515_read(MCP_RXB0DLC);
 
-    data = mcp2515_read(MCP_RXB0D0);
+    data_GLOBAL = mcp2515_read(MCP_RXB0D0);
 
+    mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
     received = false;
 
     return data;
   }
+  return 0;
 }
 
 int CAN_Trasmission_Complete()
@@ -97,10 +105,12 @@ int CAN_Trasmission_Complete()
 }
 
 // Interrupt service routine for CAN bus
-ISR(INT1_vect)
+ISR(INT4_vect)
 {
-  _delay_ms(10);
-  //printf("%s\n", "INTERRUPT node2!");
-  mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
+  cli();
+  printf("%s\n\r", "INTERRUPT node2!");
   received = true;
+  //mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
+  CAN_Receive();
+  sei();
 }

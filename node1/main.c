@@ -47,9 +47,7 @@ int main()
 
     OLED_Init();
     Menu_Print(menu);
-    //CAN_Init();
-
-    double T = 10.00;
+    CAN_Init();
 
     sei();
 
@@ -60,22 +58,18 @@ int main()
 
         print_selection(menu);
 
-        //CAN_Trasmission();
+        //setData(JOYCON_X_Axis());
+
+        CAN_Trasmission();
 
         //value = CAN_Receive();
         //printf("%02x\n\r ", value);
 
-        //setData(JOYCON_X_Axis());
+        setData(JOYCON_X_Axis());
 
         _delay_ms(100);
 
-        //display off
-        //*OLED_CMD = 0xAF;
-
-        _delay_ms(100);
-
-        //display on
-      	//*OLED_CMD = 0xAE;
+        //printf("%s\n\r", "A");
 
         //JOYSTICK_Output();
         change_selection(menu);
@@ -88,10 +82,6 @@ int main()
 
         //mcp2515_init();
 
-        //button_pressed(menu);
-        //oled_clear();
-
-        //_delay_ms(T);
-        //JOYSTICK_Output();
+        button_pressed(menu);
     }
 }

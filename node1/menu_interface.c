@@ -197,7 +197,6 @@ void button_pressed(void* menu)
       str[0] = c;
       printf("%c\n", c);
       oled_print(str, 1);
-      _delay_ms(1000.0);
       Menu_Print(menu);
   }
 }
@@ -218,13 +217,12 @@ void change_selection(void* menu)
         set_selection(menu, i);
         treshold_UP = false;
     }
-    _delay_ms(100);
-    if (check_Y_Axis_DOWN() == -1 && !treshold_UP) {
+    if (check_Y_Axis_UP() == -1 && !treshold_UP) {
         treshold_UP = true;
     }
 
-  if(check_Y_Axis_DOWN() == 1 && treshold_DOWN)
-  {
+   if(check_Y_Axis_DOWN() == 1 && treshold_DOWN)
+   {
       int i = where_is_one(menu);
       if(i - 1 >= 0)
       {
@@ -236,9 +234,8 @@ void change_selection(void* menu)
       }
       set_selection(menu, i);
       treshold_DOWN = false;
-  }
-  _delay_ms(100);
-  if (check_Y_Axis_DOWN() == -1 && !treshold_DOWN) {
+   }
+   if (check_Y_Axis_DOWN() == -1 && !treshold_DOWN) {
       treshold_DOWN = true;
-  }
+   }
 }

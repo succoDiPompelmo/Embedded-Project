@@ -97,7 +97,6 @@ int CAN_Trasmission_Complete()
 // INterrupt service routine for CAN bus
 ISR(INT1_vect)
 {
-  //_delay_ms(10000);
   printf("%s\n\r", "INTERRUPT node1!");
   received = true;
 }

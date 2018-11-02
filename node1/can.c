@@ -89,8 +89,6 @@ uint8_t mcp2515_init()
   SPI_MasterInit();   //Initialize SPI
   mcp2515_reset();  //Send reset-command
 
-  _delay_ms(100.0);
-
   printf("work! \n\r");
   //Self-test
   value = mcp2515_read(MCP_CANSTAT);
