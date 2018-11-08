@@ -26,6 +26,11 @@ void setData(uint8_t data)
   l.data = data;
 }
 
+void setIDH(uint8_t data)
+{
+  l.IDH = data;
+}
+
 
 void CAN_Init()
 {

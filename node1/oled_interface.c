@@ -314,6 +314,7 @@ void button_pressed(void* menu)
   // Check if button is pressed
   if(!(PIND & (1 << PD2)))
   {
+      PORTD &= ~(1 << PD3);
       int i = where_is_one(menu);
       oled_clear();
       oled_reset();

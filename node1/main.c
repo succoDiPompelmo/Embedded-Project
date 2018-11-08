@@ -37,6 +37,8 @@ int main()
     SFIOR |= (1 << XMM2);
 
     DDRD &= ~(1 << PD2);
+    DDRD |= (1 << PD3);
+    PORTD |= (1 << PD3);
     cli();
     MCUCR |= (1<<ISC11);
     GICR |= (1 << INT1);
@@ -60,12 +62,16 @@ int main()
 
         //setData(JOYCON_X_Axis());
 
-        CAN_Trasmission();
-
         //value = CAN_Receive();
         //printf("%02x\n\r ", value);
 
         setData(JOYCON_X_Axis());
+        setIDH(0x30);
+        CAN_Trasmission();
+
+        setData(SLIDEBAR_Left());
+        setIDH(0x20);
+        CAN_Trasmission();
 
         _delay_ms(100);
 
@@ -83,5 +89,6 @@ int main()
         //mcp2515_init();
 
         button_pressed(menu);
+        PORTD |= (1 << PD3);
     }
 }

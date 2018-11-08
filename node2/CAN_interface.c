@@ -6,6 +6,7 @@
 #include "can.h"
 #include "MCP2515.h"
 #include "CAN_interface.h"
+#include "DAC.h"
 
 #define test_bit(reg, bit) (reg & (1 << bit))
 
@@ -21,6 +22,8 @@ typedef struct message {
 
 struct message l = {0x01, 0x00, 0x14, 0x01};
 
+struct message lr = {0x01, 0x00, 0x14, 0x01};
+
 void setData(uint8_t data)
 {
   l.data = data;
@@ -31,6 +34,11 @@ int data_GLOBAL;
 int get_DATA_GLOBAL()
 {
   return data_GLOBAL;
+}
+
+int get_IDH()
+{
+  return lr.IDH;
 }
 
 
@@ -76,7 +84,7 @@ uint8_t CAN_Receive()
 
     volatile uint8_t data;
     // Get message ID
-    data = mcp2515_read(MCP_RXB0SIDH);
+    lr.IDH = mcp2515_read(MCP_RXB0SIDH);
     data = mcp2515_read(MCP_RXB0SIDL);
 
     // Get data length
@@ -104,13 +112,40 @@ int CAN_Trasmission_Complete()
   }
 }
 
+volatile int sum;
+
+void manage_message()
+{
+  CAN_Receive();
+  if (get_IDH() == 0x30)
+  {
+    volatile int value;
+    value = get_DATA_GLOBAL();
+    sum = 2000 + value*7.8;
+    pwn_set_cycle(sum);
+  }
+  if (get_IDH() == 0x20)
+  {
+    if (get_DATA_GLOBAL() < 0x80)
+    {
+      PORTH &= ~(1 << PH1);
+    }
+    if (get_DATA_GLOBAL() > 0x80)
+    {
+      PORTH |= (1 << PH1);
+    }
+    if (get_DATA_GLOBAL() > 0x80) DAC_write(get_DATA_GLOBAL() - 0x80);
+    else DAC_write(0x80 - get_DATA_GLOBAL());
+  }
+}
+
 // Interrupt service routine for CAN bus
 ISR(INT4_vect)
 {
   cli();
-  printf("%s\n\r", "INTERRUPT node2!");
+  //printf("%s\n\r", "INTERRUPT node2!");
   received = true;
   //mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
-  CAN_Receive();
+  manage_message();
   sei();
 }
