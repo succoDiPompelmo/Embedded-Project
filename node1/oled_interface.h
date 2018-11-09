@@ -13,3 +13,5 @@ void set_selection(void* menu, int select);
 void button_pressed(void* menu);
 
 void oled_clear();
+
+void oledSendData(char c);

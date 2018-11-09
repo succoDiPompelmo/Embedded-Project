@@ -4,6 +4,15 @@
 // is responsibility of the caller to set the starting position with the
 // corresponding function for coloumn and page and this must be done everytime
 // you want to print something.
+#include <avr/pgmspace.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <avr/io.h>
+#include <stdlib.h>
+
+#include "menu_interface.h"
+#include "oled_interface.h"
+#include "joystick.h"
 
 bool treshold_UP = true;
 bool treshold_DOWN = true;
@@ -32,8 +41,8 @@ void initialiseNode(node* new_node, char* title, int selection, int length, int 
   new_node->menu->menu_position = 0;
   new_node->menu->length = 4;
 
-  new_node->menu->title = malloc(strlen(name)+1);
-  strcpy(new_node->menu->title, name);
+  new_node->menu->title = malloc(strlen(title)+1);
+  strcpy(new_node->menu->title, title);
 
   new_node->next = NULL;
 }
@@ -48,7 +57,7 @@ void push(node * head, char* title, int selection, int length, int menu_position
 
     current->next = (struct node*)malloc(sizeof(struct node));
 
-    initialiseNode(current->next, title, selection, length, menu_position);
+    //initialiseNode(current->next, title, selection, length, menu_position);
 
     current->next->menu = (struct menu_item*)malloc(sizeof(struct menu_item));
 
@@ -67,7 +76,7 @@ node* Menu_Init(){
 
     struct node* new_node = (struct node*)malloc(sizeof(struct node));
 
-    initialiseNode(new_node, "MENU", selection, length, menu_position);
+    //initialiseNode(new_node, "MENU", selection, length, menu_position);
 
     new_node->menu = (struct menu_item*)malloc(sizeof(struct menu_item));
 
@@ -171,7 +180,7 @@ void clear_selection()
     OLED_setup_column_adress(0x00, 0x0A);
     OLED_setup_page_adress(0x00, 0x7F);
     for (size_t i = 0; i < 300; i++) {
-        oledSendData(0x00)
+        oledSendData(0x00);
     }
 }
 

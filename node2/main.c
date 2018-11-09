@@ -13,6 +13,9 @@
 #include "CAN_interface.h"
 #include "pwn.h"
 #include "DAC.h"
+#include "Timer_handler.h"
+#include "encoder_interface.h"
+//#include "PID.h"
 
 int main()
 {
@@ -38,7 +41,13 @@ int main()
 
   CAN_Init();
 
+  Timer_Init();
+
+  Encoder_Init();
+
   pwn_set();
+
+  //PID_Init();
 
   // adc init
   DDRF &= ~(1 << PINF0);
@@ -62,11 +71,13 @@ int main()
 
     ADCSRA |= (1 << ADEN) | (1 << ADSC);
 
-    _delay_ms(100);
+    _delay_ms(10);
+
+    Encoder_Read();
 
     value = ADCH;
 
-    printf("%d\n\r", ADCH);
+    //printf("%d\n\r", ADCH);
 
     if (value < 10)
     {
@@ -80,7 +91,7 @@ int main()
 
     if (score_stack == 0)
     {
-      printf("%s\n", "GOAL");
+      printf("%s\n\r", "GOAL");
       score_stack = 50;
     }
 

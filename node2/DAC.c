@@ -14,6 +14,8 @@ void DAC_init()
 
 void DAC_write(uint8_t value)
 {
+  //if (value < 0) value = value * -1;
+
   uint8_t i2c_write[3];
   unsigned char msgSize = 3;
 

@@ -21,6 +21,7 @@
 #include "sram_interface.h"
 #include "oled_interface.h"
 #include "CAN_interface.h"
+#include "Timer_handler.h"
 
 volatile char *OLED_DATA = (char *) 0x1200;
 volatile char *OLED_CMD = (char *) 0x1000;
@@ -51,6 +52,8 @@ int main()
     Menu_Print(menu);
     CAN_Init();
 
+    Timer_Init();
+
     sei();
 
     while(1)
@@ -60,11 +63,6 @@ int main()
 
         print_selection(menu);
 
-        //setData(JOYCON_X_Axis());
-
-        //value = CAN_Receive();
-        //printf("%02x\n\r ", value);
-
         setData(JOYCON_X_Axis());
         setIDH(0x30);
         CAN_Trasmission();
@@ -72,21 +70,11 @@ int main()
         setData(SLIDEBAR_Left());
         setIDH(0x20);
         CAN_Trasmission();
+        printf("%d\n", SLIDEBAR_Left());
 
         _delay_ms(100);
 
-        //printf("%s\n\r", "A");
-
-        //JOYSTICK_Output();
         change_selection(menu);
-
-        //test();
-
-        //SRAM_test();
-
-        //SPI_MasterTransmit(0b01010101);
-
-        //mcp2515_init();
 
         button_pressed(menu);
         PORTD |= (1 << PD3);

@@ -7,6 +7,7 @@
 #include "MCP2515.h"
 #include "CAN_interface.h"
 #include "DAC.h"
+#include "PID.h"
 
 #define test_bit(reg, bit) (reg & (1 << bit))
 
@@ -121,6 +122,7 @@ void manage_message()
   {
     volatile int value;
     value = get_DATA_GLOBAL();
+    //printf("%02x\n\r", value);
     sum = 2000 + value*7.8;
     pwn_set_cycle(sum);
   }
@@ -134,8 +136,10 @@ void manage_message()
     {
       PORTH |= (1 << PH1);
     }
-    if (get_DATA_GLOBAL() > 0x80) DAC_write(get_DATA_GLOBAL() - 0x80);
-    else DAC_write(0x80 - get_DATA_GLOBAL());
+    //printf("%d\n", get_DATA_GLOBAL());
+    //if (get_DATA_GLOBAL() > 0x80) DAC_write(get_DATA_GLOBAL() - 0x80);
+    //else DAC_write(0x80 - get_DATA_GLOBAL());
+    PID_update(get_DATA_GLOBAL());
   }
 }
 
@@ -143,7 +147,6 @@ void manage_message()
 ISR(INT4_vect)
 {
   cli();
-  //printf("%s\n\r", "INTERRUPT node2!");
   received = true;
   //mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
   manage_message();
