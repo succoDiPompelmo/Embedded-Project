@@ -16,40 +16,41 @@
 #define MYBURR FOSC/16/BAUD-1
 
 #include "uart_interface.h"
-#include "led.h"
 #include "joystick.h"
 #include "sram_interface.h"
-#include "oled_interface.h"
 #include "CAN_interface.h"
 #include "Timer_handler.h"
 
-volatile char *OLED_DATA = (char *) 0x1200;
-volatile char *OLED_CMD = (char *) 0x1000;
-
 int main()
 {
-    _delay_ms(100);
     USART_Init (MYBURR);
     fdevopen(*USART_Transmit, *USART_Receive);
-    //led_init();
 
     //Enable the external memory interface/4 bits address
     MCUCR |= (1 << SRE);
     SFIOR |= (1 << XMM2);
 
-    DDRD &= ~(1 << PD2);
-    DDRD |= (1 << PD3);
-    PORTD |= (1 << PD3);
+
+    // Game Board Button PIN
+    DDRE &= ~(1 << PD2);
+
     cli();
-    MCUCR |= (1<<ISC11);
+
+    // INT2 will be used for the button sense
+    // Enable INT1 and INT2
+    MCUCR |= (1 << ISC11);
+    //EMCUCR |= (1 << ISC2);
     GICR |= (1 << INT1);
+    //GICR |= (1 << INT2);
 
 
-
+    // Initialisation
     void* menu = Menu_Init();
 
     OLED_Init();
+
     Menu_Print(menu);
+
     CAN_Init();
 
     Timer_Init();
@@ -58,25 +59,36 @@ int main()
 
     while(1)
     {
-
-        uint8_t value;
-
+        // Print the menu
+        Menu_Print(menu);
         print_selection(menu);
 
+        // MOVE THIS INSIDE THE TIMER
+
+        // Send Joycon Position to the second node
         setData(JOYCON_X_Axis());
         setIDH(0x30);
         CAN_Trasmission();
 
+        // This delay must be here to prevent the stall of the second node
+        // otherwise we sent too many message to the second node and the interrupt
+        // routine deadlock
+        _delay_ms(40);
+
+        // Send Slidebar Position to the second node
         setData(SLIDEBAR_Left());
         setIDH(0x20);
         CAN_Trasmission();
-        printf("%d\n", SLIDEBAR_Left());
 
-        _delay_ms(100);
+        // This delay must be here to prevent the stall of the second node
+        // otherwise we sent too many message to the second node and the interrupt
+        // routine deadlock
+        _delay_ms(40);
 
+        // Change the menu selection
         change_selection(menu);
 
+        // Check if the button is pressed
         button_pressed(menu);
-        PORTD |= (1 << PD3);
     }
 }

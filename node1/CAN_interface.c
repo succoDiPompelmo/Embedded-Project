@@ -1,11 +1,14 @@
 #include <stdbool.h>
 #include <avr/interrupt.h>
 #include <avr/io.h>
+
+#define F_CPU 4915200UL
 #include <util/delay.h>
 
 #include "can.h"
 #include "MCP2515.h"
 #include "CAN_interface.h"
+#include "oled_interface.h"
 
 #define test_bit(reg, bit) (reg & (1 << bit))
 
@@ -66,25 +69,26 @@ void CAN_Trasmission()
 
 uint8_t CAN_Receive()
 {
-  // Message data
-  uint8_t data[4];
+  // Get message ID
+  l.IDH = mcp2515_read(MCP_RXB0SIDH);
+  l.IDL = mcp2515_read(MCP_RXB0SIDL);
 
-  if(received)
+  // Get data length
+  l.length = mcp2515_read(MCP_RXB0DLC);
+
+  l.data = mcp2515_read(MCP_RXB0D0);
+
+  received = false;
+  mcp2515_bit_modify(MCP_CANINTF, 0x01, 0); //write what it does
+
+  printf("%02X\n\r", l.IDH);
+  if (l.IDH == 0x55)
   {
-    // Get message ID
-    data[0] = mcp2515_read(MCP_RXB0SIDH);
-    data[1] = mcp2515_read(MCP_RXB0SIDL);
-
-    // Get data length
-    data[2] = mcp2515_read(MCP_RXB0DLC);
-
-    data[3] = mcp2515_read(MCP_RXB0D0);
-
-    received = false;
-    mcp2515_bit_modify(MCP_CANINTF, 0x01, 0); //write what it does
-
-    return data[3];
+    oled_clear();
+    oled_print("GOAL", 4);
+    _delay_ms(500);
   }
+  return 0;
 }
 
 int CAN_Trasmission_Complete()
@@ -99,9 +103,11 @@ int CAN_Trasmission_Complete()
   }
 }
 
-// INterrupt service routine for CAN bus
+// Interrupt service routine for CAN bus
 ISR(INT1_vect)
 {
-  printf("%s\n\r", "INTERRUPT node1!");
-  received = true;
+  cli();
+  printf("%s\n\r", "INTERRUPT");
+  CAN_Receive();
+  sei();
 }

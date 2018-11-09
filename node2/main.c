@@ -92,6 +92,12 @@ int main()
     if (score_stack == 0)
     {
       printf("%s\n\r", "GOAL");
+      // Move to the communication Controller
+      cli();
+      setIDH(0x55);
+      setData(0x00);
+      CAN_Trasmission();
+      sei();
       score_stack = 50;
     }
 

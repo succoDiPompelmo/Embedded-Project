@@ -9,10 +9,14 @@
 #include <stdio.h>
 #include <avr/io.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "menu_interface.h"
+#define F_CPU 4915200UL
+#include <util/delay.h>
+
 #include "oled_interface.h"
 #include "joystick.h"
+#include "communication_controller.h"
 
 bool treshold_UP = true;
 bool treshold_DOWN = true;
@@ -32,6 +36,8 @@ typedef struct node {
 } node;
 
 int level = 0;
+
+#include "menu_interface.h"
 
 void initialiseNode(node* new_node, char* title, int selection, int length, int menu_position)
 {
@@ -157,6 +163,15 @@ int menu_length(void *menu)
     return i;
 }
 
+void clear_selection()
+{
+    OLED_setup_column_adress(0x00, 0x0A);
+    OLED_setup_page_adress(0x00, 0x7F);
+    for (size_t i = 0; i < 300; i++) {
+        oledSendData(0x00);
+    }
+}
+
 void set_selection(void* menu, int select)
 {
     node* new_node = (node* )menu;
@@ -175,15 +190,6 @@ void set_selection(void* menu, int select)
     }
 }
 
-void clear_selection()
-{
-    OLED_setup_column_adress(0x00, 0x0A);
-    OLED_setup_page_adress(0x00, 0x7F);
-    for (size_t i = 0; i < 300; i++) {
-        oledSendData(0x00);
-    }
-}
-
 void clear_menu()
 {
     OLED_setup_column_adress(0x0B, 0x0B);
@@ -193,12 +199,13 @@ void clear_menu()
     }
 }
 
-void button_pressed(void* menu)
+int button_pressed(void* menu)
 {
+  int i = -1;
   // Check if button is pressed
   if(!(PIND & (1 << PD2)))
   {
-      int i = where_is_one(menu);
+      i = where_is_one(menu);
       oled_clear();
       oled_reset();
       char str[2] = "\0";
@@ -206,8 +213,12 @@ void button_pressed(void* menu)
       str[0] = c;
       printf("%c\n", c);
       oled_print(str, 1);
+      _delay_ms(1000);
       Menu_Print(menu);
   }
+  if (i == 1) start_message();
+  if (i == 2) stop_message();
+  return i;
 }
 
 void change_selection(void* menu)

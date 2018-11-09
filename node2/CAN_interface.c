@@ -2,6 +2,7 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <util/delay.h>
+#include <stdbool.h>
 
 #include "can.h"
 #include "MCP2515.h"
@@ -12,7 +13,7 @@
 #define test_bit(reg, bit) (reg & (1 << bit))
 
 volatile bool received = false;
-
+volatile bool start = false;
 
 typedef struct message {
   uint8_t IDH;
@@ -28,6 +29,11 @@ struct message lr = {0x01, 0x00, 0x14, 0x01};
 void setData(uint8_t data)
 {
   l.data = data;
+}
+
+void setIDH(uint8_t data)
+{
+  l.IDH = data;
 }
 
 int data_GLOBAL;
@@ -118,28 +124,41 @@ volatile int sum;
 void manage_message()
 {
   CAN_Receive();
-  if (get_IDH() == 0x30)
+  if (start)
   {
-    volatile int value;
-    value = get_DATA_GLOBAL();
-    //printf("%02x\n\r", value);
-    sum = 2000 + value*7.8;
-    pwn_set_cycle(sum);
+    if (get_IDH() == 0x30)
+    {
+      volatile int value;
+      value = get_DATA_GLOBAL();
+      //printf("%02x\n\r", value);
+      sum = 2000 + value*7.8;
+      pwn_set_cycle(sum);
+    }
+    if (get_IDH() == 0x20)
+    {
+      if (get_DATA_GLOBAL() < 0x80)
+      {
+        PORTH &= ~(1 << PH1);
+      }
+      if (get_DATA_GLOBAL() > 0x80)
+      {
+        PORTH |= (1 << PH1);
+      }
+      //printf("%d\n", get_DATA_GLOBAL());
+      //if (get_DATA_GLOBAL() > 0x80) DAC_write(get_DATA_GLOBAL() - 0x80);
+      //else DAC_write(0x80 - get_DATA_GLOBAL());
+      PID_update(get_DATA_GLOBAL());
+    }
   }
-  if (get_IDH() == 0x20)
+  if (get_IDH() == 0x00)
   {
-    if (get_DATA_GLOBAL() < 0x80)
-    {
-      PORTH &= ~(1 << PH1);
-    }
-    if (get_DATA_GLOBAL() > 0x80)
-    {
-      PORTH |= (1 << PH1);
-    }
-    //printf("%d\n", get_DATA_GLOBAL());
-    //if (get_DATA_GLOBAL() > 0x80) DAC_write(get_DATA_GLOBAL() - 0x80);
-    //else DAC_write(0x80 - get_DATA_GLOBAL());
-    PID_update(get_DATA_GLOBAL());
+    printf("%s\n\r", "START THE GAME");
+    start = true;
+  }
+  if (get_IDH() == 0xFF)
+  {
+    printf("%s\n\r", "STOP THE GAME");
+    start = false;
   }
 }
 
