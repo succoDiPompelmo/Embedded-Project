@@ -19,7 +19,7 @@ float Ki = 0.0;
 
 void PID_Init()
 {
-  Kp = 0.01;
+  Kp = 0.05;
 }
 
 void PID_update(uint8_t target_8)
@@ -48,7 +48,7 @@ void PID_update(uint8_t target_8)
   // If the control variable is negative, multiply for -1 to set it positive
   if (pwm < 0) pwm = pwm * -1;
 
-  // DAC read an 8 value so we need to cast the control variable
+  // DAC accept an 8 bits value so we need to cast the control variable
   uint8_t pwm_8 = (uint8_t) pwm;
 
   printf("PWM_8 %d\n\r", pwm_8);

@@ -12,7 +12,6 @@ ISR(TIMER1_OVF_vect)
   PORTB ^= (1 << LED);
   // Restart the count for the timer
   TCNT1 = 63974;
-
   sei();
 }
 

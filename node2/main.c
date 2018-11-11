@@ -47,7 +47,7 @@ int main()
 
   pwn_set();
 
-  //PID_Init();
+  PID_Init();
 
   // adc init
   DDRF &= ~(1 << PINF0);
