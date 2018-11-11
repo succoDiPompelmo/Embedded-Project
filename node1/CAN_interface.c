@@ -12,9 +12,7 @@
 
 #define test_bit(reg, bit) (reg & (1 << bit))
 
-bool received = false;
-
-
+// Struct that define the content of a message
 typedef struct message {
   uint8_t IDH;
   uint8_t IDL;
@@ -22,21 +20,26 @@ typedef struct message {
   uint8_t length;
 } message;
 
+// Global variable that contain save the content of a message
 struct message l = {0x01, 0x00, 0x20, 0x01};
 
+// Set the data field in the message variable
 void setData(uint8_t data)
 {
   l.data = data;
 }
 
+// Set the IDH field in the message variable
 void setIDH(uint8_t data)
 {
   l.IDH = data;
 }
 
 
+// Init the can
 void CAN_Init()
 {
+  // Init the the CAN-Cotroller
   mcp2515_init();
 
   // RX0 - Turn masks/filter off, rollover disabled
@@ -51,6 +54,7 @@ void CAN_Init()
 
 void CAN_Trasmission()
 {
+  // Check if the previous transmission has finished
   if (CAN_Trasmission_Complete())
   {
     // Set message ID
@@ -76,12 +80,13 @@ uint8_t CAN_Receive()
   // Get data length
   l.length = mcp2515_read(MCP_RXB0DLC);
 
+  // Get the data
   l.data = mcp2515_read(MCP_RXB0D0);
 
-  received = false;
-  mcp2515_bit_modify(MCP_CANINTF, 0x01, 0); //write what it does
+  // Reset the interrupt flag bit
+  mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
 
-  printf("%02X\n\r", l.IDH);
+  // GOAL
   if (l.IDH == 0x55)
   {
     oled_clear();
@@ -107,7 +112,7 @@ int CAN_Trasmission_Complete()
 ISR(INT1_vect)
 {
   cli();
-  printf("%s\n\r", "INTERRUPT");
+  // Handle the reception of a message
   CAN_Receive();
   sei();
 }

@@ -31,7 +31,7 @@ int main()
     SFIOR |= (1 << XMM2);
 
 
-    // Game Board Button PIN
+    // Game Board Joystic Button PIN
     DDRE &= ~(1 << PD2);
 
     cli();
