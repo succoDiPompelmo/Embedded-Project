@@ -17,5 +17,6 @@ void pwn_set()
 
 void pwn_set_cycle(int value)
 {
+  // Set the duty cycle
   OCR1A = value;
 }

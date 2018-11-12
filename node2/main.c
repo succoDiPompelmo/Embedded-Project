@@ -15,7 +15,6 @@
 #include "DAC.h"
 #include "Timer_handler.h"
 #include "encoder_interface.h"
-//#include "PID.h"
 
 int main()
 {
@@ -50,6 +49,7 @@ int main()
   PID_Init();
 
   // adc init
+  // ADC_Init()
   DDRF &= ~(1 << PINF0);
 
   ADMUX &= ~(1 << REFS1);
@@ -100,23 +100,5 @@ int main()
       sei();
       score_stack = 50;
     }
-
-
-
-    //pwn_set();
-
-    //printf("VALUE adc : %d\n\r", value);
-
-    //value = get_DATA_GLOBAL();
-
-    //printf("%d\n\r", value);
-
-    //sum = 2000 + value*7.8;
-
-    //pwn_set_cycle(sum);
-
-    //printf("VALUE : %d\n\r", sum);
-
-    //setData(0x97);
   }
 }

@@ -9,6 +9,7 @@ volatile int16_t e;
 volatile uint8_t last_e;
 volatile int16_t pwm;
 
+// PID parameter
 float Kp = 0.1;
 float Kd = 0.0;
 float Ki = 0.0;
