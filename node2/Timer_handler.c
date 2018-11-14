@@ -8,15 +8,18 @@
 ISR(TIMER3_OVF_vect)
 {
   cli();
+  // Toggle the LED
   PORTG ^= (1 << LED);
+  // Restart the count for the timer
   TCNT3 = 63974;
   sei();
 }
 
 void Timer_Init()
 {
+  // Set the pin of the LED as OUTPUT
   DDRG |= (1 << LED);
-
+  // Set from wich number the counter must start
   TCNT3 = 63974; // For 1 sec at 16 Mhz
 
   TCCR3A = 0x00;

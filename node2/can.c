@@ -18,38 +18,53 @@
 
 void mcp2515_reset()
 {
-  PORTB &= ~(1<<PB7); //Select CAN-controller
+  // Select CAN-controller
+  PORTB &= ~(1<<PB7);
+  // Send the reset command to the MCP2515
   SPI_MasterTransmit(MCP_RESET);
-
-  PORTB |= (1<<PB7);   //Deselect CAN-controller
+  //Deselect CAN-controller
+  PORTB |= (1<<PB7);
 }
 
 void mcp2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data)
 {
-  PORTB &= ~(1<<PB7); //Select CAN-controller
+  // Select CAN-controller
+  PORTB &= ~(1<<PB7);
+  // Send the bit modify command to the MCP2515
   SPI_MasterTransmit(MCP_BITMOD);
+  // Send the adress of the register to the CAN-Controller
   SPI_MasterTransmit(address);
+  // Send the mask to the CAN-Controller
   SPI_MasterTransmit(mask);
+  // Send the data to write in the regoster to the CAN-Controller
   SPI_MasterTransmit(data);
-  PORTB |= (1<<PB7);   //Deselect CAN-controller
+  // Deselect CAN-controller
+  PORTB |= (1<<PB7);
 }
 
 
  void mcp2515_request_to_send()
  {
-   PORTB &= ~(1<<PB7); //Select CAN-controller
+   // Select CAN-controller
+   PORTB &= ~(1<<PB7);
+   // Send command to initiate the trasmission for the trasmission buffer TXB0
    SPI_MasterTransmit(MCP_RTS_TX0);
-   PORTB |= (1<<PB7);   //Deselect CAN-controller
+   // Deselect CAN-controller
+   PORTB |= (1<<PB7);
  }
 
 
 uint8_t mcp2515_read_status(uint8_t type)
 {
   uint8_t data;
-  PORTB &= ~(1<<PB7); //Select CAN-controller
+  // Select CAN-controller
+  PORTB &= ~(1<<PB7);
+  // Send command to read the status bits
   SPI_MasterTransmit(MCP_READ_STATUS);
+  // Read the status bits and save it
   data=SPI_read();
-  PORTB |= (1<<PB7);   //Deselect CAN-controller
+  // Deselect CAN-controller
+  PORTB |= (1<<PB7);
 
   return data;
 }
@@ -58,13 +73,16 @@ uint8_t mcp2515_read_status(uint8_t type)
 
 void mcp2515_write_register( uint8_t address, uint8_t data )
 {
-	PORTB &= ~(1<<PB7); //Select CAN-controller
-
-  SPI_MasterTransmit(MCP_WRITE);  //Send write instruction
-  SPI_MasterTransmit(address); //Send addressing
-  SPI_MasterTransmit(data); //Send data
-
-  PORTB |= (1<<PB7);   //Deselect CAN-controller
+  // Select CAN-controller
+	PORTB &= ~(1<<PB7);
+  // Send write command to the Can-Controller
+  SPI_MasterTransmit(MCP_WRITE);
+  // Send the adress of the register to write
+  SPI_MasterTransmit(address);
+  // Send the data to write
+  SPI_MasterTransmit(data);
+  // Deselect CAN-controller
+  PORTB |= (1<<PB7);
 }
 
 
@@ -72,24 +90,30 @@ void mcp2515_write_register( uint8_t address, uint8_t data )
 uint8_t mcp2515_read(uint8_t address)
 {
   uint8_t result;
-  PORTB &= ~(1<<PB7); //Select CAN-controller
-
-  SPI_MasterTransmit(MCP_READ);  //Send read instruction
-  SPI_MasterTransmit(address); //Send addressing
+  // Select CAN-controller
+  PORTB &= ~(1<<PB7);
+  // Send read command to the Can-Controller
+  SPI_MasterTransmit(MCP_READ);
+  // Send the adress of the register to read
+  SPI_MasterTransmit(address);
+  // Read and save the register
   result=SPI_read();
-
-  PORTB |= (1<<PB7);   //Deselect CAN-controller
+  // Deselect CAN-controller
+  PORTB |= (1<<PB7);
 
   return result;
 }
 
 uint8_t mcp2515_init()
 {
+  // Set SS as OUTPUT
   DDRB |= (1 << PB7);
   uint8_t value;
 
-  SPI_MasterInit();   //Initialize SPI
-  mcp2515_reset();    //Send reset-command
+  // Initialize SPI
+  SPI_MasterInit();
+  // Send reset-command
+  mcp2515_reset();
 
   _delay_ms(100.0);
 
