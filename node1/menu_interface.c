@@ -95,8 +95,10 @@ node* Menu_Init(){
 
     new_node->next = NULL;
 
-    push(new_node, "CREDITS", 0, 7, 1);
-    push(new_node, "EXTRAS", 0, 6, 1);
+    push(new_node, "PLAY", 0, 4, 1);
+    push(new_node, "STOP", 0, 4, 1);
+    push(new_node, "DIFF UP", 0, 7, 1);
+    push(new_node, "DIFF DOWN", 0, 9, 1);
 
     return new_node;
 }
@@ -205,6 +207,7 @@ int button_pressed(void* menu)
   // Check if button is pressed
   if(!(PIND & (1 << PD2)))
   {
+      // Find where is the selection
       i = where_is_one(menu);
       oled_clear();
       oled_reset();
@@ -216,8 +219,11 @@ int button_pressed(void* menu)
       _delay_ms(1);
       Menu_Print(menu);
   }
+  // Base on the selector position send a particular message
   if (i == 1) start_message();
   if (i == 2) stop_message();
+  if (i == 3) change_difficulty(0);
+  if (i == 4) change_difficulty(1);
   return i;
 }
 

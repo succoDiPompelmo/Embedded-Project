@@ -4,6 +4,8 @@
 #define GOAL     0x55
 #define JOYSTICK 0X30
 #define SLIDER   0X20
+#define DOWN     0x72
+#define UP       0x73
 
 #include <stdio.h>
 #include <avr/io.h>
@@ -101,7 +103,7 @@ ISR(INT2_vect)
   sei();
 }
 
-// Interrupt service routine for CAN bus
+// Interrupt service routine for CAN bus incoming communication
 ISR(INT4_vect)
 {
   cli();
