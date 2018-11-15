@@ -27,6 +27,22 @@ void PID_Init()
   Kd = 0.005;
 }
 
+void raise_up_difficulty()
+{
+  if (Kp < 0.07)
+  {
+    Kp = Kp + 0.005;
+  }
+}
+
+void raise_down_difficulty()
+{
+  if (Kp > 0.03)
+  {
+    Kp = Kp - 0.005;
+  }
+}
+
 void PID_update(uint8_t target_8)
 {
   // Get the current position

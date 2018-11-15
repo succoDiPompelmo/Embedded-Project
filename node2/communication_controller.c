@@ -93,6 +93,16 @@ void incoming_communication()
     printf("%s\n\r", "STOP THE GAME");
     start = false;
   }
+  if (get_IDH() == UP)
+  {
+    printf("%s\n", "DIFFICULTY UP");
+    raise_up_difficulty();
+  }
+  if (get_IDH() == DOWN)
+  {
+    printf("%s\n", "DIFFICULTY UP");
+    raise_down_difficulty();
+  }
 }
 
 // Interrupt service routine for CAN bus
