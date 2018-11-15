@@ -14,7 +14,6 @@
 
 volatile bool received = false;
 // Boolean variable that activate the ping pong
-volatile bool start = false;
 
 // Struct that define the content of a message
 typedef struct message {
@@ -41,13 +40,10 @@ void setIDH(uint8_t data)
   l.IDH = data;
 }
 
-// Global variable to save the data
-int data_GLOBAL;
-
-// Return the global variable
-int get_DATA_GLOBAL()
+// Get the data received
+uint8_t getData()
 {
-  return data_GLOBAL;
+  return lr.data;
 }
 
 // Return the high adress of the message received
@@ -93,24 +89,19 @@ void CAN_Trasmission()
 
 uint8_t CAN_Receive()
 {
-  if(received)
-  {
+  volatile uint8_t data;
+  // Get message ID
+  lr.IDH = mcp2515_read(MCP_RXB0SIDH);
+  data = mcp2515_read(MCP_RXB0SIDL);
+  // Get data length
+  data = mcp2515_read(MCP_RXB0DLC);
+  // Get data
+  lr.data = mcp2515_read(MCP_RXB0D0);
+  // Reset the interrupt flag bit
+  mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
+  received = false;
 
-    volatile uint8_t data;
-    // Get message ID
-    lr.IDH = mcp2515_read(MCP_RXB0SIDH);
-    data = mcp2515_read(MCP_RXB0SIDL);
-    // Get data length
-    data = mcp2515_read(MCP_RXB0DLC);
-    // Get data
-    data_GLOBAL = mcp2515_read(MCP_RXB0D0);
-    // Reset the interrupt flag bit
-    mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
-    received = false;
-
-    return data;
-  }
-  return 0;
+  return data;
 }
 
 int CAN_Trasmission_Complete()
@@ -123,57 +114,4 @@ int CAN_Trasmission_Complete()
   else {
     return 1;
   }
-}
-
-volatile int sum;
-
-void manage_message()
-{
-  // Read the message received
-  CAN_Receive();
-  // If the player has pressed the start button
-  if (start)
-  {
-    // Check if we received a message that contains the Joystick position
-    if (get_IDH() == 0x30)
-    {
-      volatile int value;
-      // Read the joystick position and save it in a variable
-      value = get_DATA_GLOBAL();
-      // Computation to transform the joystick position into a square wave
-      sum = 2000 + value*7.8;
-      // Set the square wave
-      pwn_set_cycle(sum);
-    }
-    // Check if we received a message that contains the Slider position
-    if (get_IDH() == 0x20)
-    {
-      // Use a PID to compute the value to send to the DAC to control the DC motor
-      printf("%d\n\r", get_DATA_GLOBAL());
-      PID_update(get_DATA_GLOBAL());
-    }
-  }
-  // If we received the message to start the Game
-  if (get_IDH() == 0x00)
-  {
-    printf("%s\n\r", "START THE GAME");
-    start = true;
-  }
-  // If we received the message to stop the Game
-  if (get_IDH() == 0xFF)
-  {
-    printf("%s\n\r", "STOP THE GAME");
-    start = false;
-  }
-}
-
-// Interrupt service routine for CAN bus
-ISR(INT4_vect)
-{
-  cli();
-  received = true;
-  //printf("%s\n", "QUI");
-  //mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
-  manage_message();
-  sei();
 }
