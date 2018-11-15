@@ -93,11 +93,13 @@ void incoming_communication()
     printf("%s\n\r", "STOP THE GAME");
     start = false;
   }
+  // MEssage to raise the difficulty
   if (get_IDH() == UP)
   {
     printf("%s\n", "DIFFICULTY UP");
     raise_up_difficulty();
   }
+  // Message to lower the difficulty
   if (get_IDH() == DOWN)
   {
     printf("%s\n", "DIFFICULTY UP");

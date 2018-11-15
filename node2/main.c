@@ -11,7 +11,7 @@
 
 #include "uart_interface.h"
 #include "CAN_interface.h"
-#include "pwn.h"
+#include "pwm.h"
 #include "DAC.h"
 #include "Timer_handler.h"
 #include "encoder_interface.h"
@@ -34,75 +34,31 @@ int main()
   EICRA |= (1 << ISC11);
   EIMSK |= (1 << INT4);
 
-
-  PORTH &= ~(1 << PH1);
+  // Initialise all the modules
 
   DAC_init();
-
   CAN_Init();
-
   Timer_Init();
-
   Encoder_Init();
-
   pwn_set();
-
   PID_Init();
-
   Score_Init();
 
-  // adc init
-  // ADC_Init()
-  // DDRF &= ~(1 << PINF0);
-  //
-  // ADMUX &= ~(1 << REFS1);
-  // ADMUX |= (1 << REFS0) | (1 << ADLAR);
-  //
-  // ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
-  // ADCSRA |= (1 << ADEN) | (1 << ADSC);
+  // Bring the DC motor in the initial position
+  PORTH |= (1 << PH1);
+  DAC_write(0x50);
+  _delay_ms(100);
 
   sei();
 
 
   while(1)
   {
-    volatile int value;
-    volatile int sum;
-
-    //CAN_Trasmission();
 
     Score_Update();
-
-    // ADCSRA |= (1 << ADEN) | (1 << ADSC);
 
     _delay_ms(10);
 
     Encoder_Read();
-
-    // value = ADCH;
-
-    //printf("ADCH :   %d\n\r", value);
-
-    // if (value < 10)
-    // {
-    //   score_stack--;
-    // }
-    //
-    // if (value > 10 && score_stack <= 20)
-    // {
-    //   score_stack++;
-    // }
-    //
-    // if (score_stack == 0)
-    // {
-    //   printf("%s\n\r", "GOAL");
-    //   // Move to the communication Controller
-    //   cli();
-    //   //setIDH(0x55);
-    //   //setData(0x00);
-    //   //CAN_Trasmission();
-    //   sei();
-    //   score_stack = 50;
-    // }
   }
 }
