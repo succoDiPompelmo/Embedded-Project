@@ -49,6 +49,20 @@ int main()
 
     OLED_Init();
 
+    oled_clear();
+
+    // Stupid initial animation
+    for (int i = 1; i < 1024; i++)
+    {
+      oled_full();
+      _delay_ms(1);
+    }
+    for (int i = 1; i < 1024; i++)
+    {
+      oled_empty();
+      _delay_ms(1);
+    }
+
     Menu_Print(menu);
 
     CAN_Init();
@@ -68,7 +82,7 @@ int main()
         // Send Joycon Position to the second node
         setData(JOYCON_X_Axis());
         setIDH(0x30);
-        CAN_Trasmission();
+        //CAN_Trasmission();
 
         // This delay must be here to prevent the stall of the second node
         // otherwise we sent too many message to the second node and the interrupt
@@ -78,7 +92,7 @@ int main()
         // Send Slidebar Position to the second node
         setData(SLIDEBAR_Left());
         setIDH(0x20);
-        CAN_Trasmission();
+        //CAN_Trasmission();
 
         // This delay must be here to prevent the stall of the second node
         // otherwise we sent too many message to the second node and the interrupt

@@ -88,6 +88,16 @@ void oledSendData(char c)
   *OLED_data = c;
 }
 
+void oled_full()
+{
+	*OLED_data = 0xFF;
+}
+
+void oled_empty()
+{
+	*OLED_data = 0x00;
+}
+
 void oledPrintChar(char c)
 {
   int character = c - 32;

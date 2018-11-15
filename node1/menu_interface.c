@@ -37,6 +37,8 @@ typedef struct node {
 
 int level = 0;
 
+void* MENU;
+
 #include "menu_interface.h"
 
 void initialiseNode(node* new_node, char* title, int selection, int length, int menu_position)
@@ -62,8 +64,6 @@ void push(node * head, char* title, int selection, int length, int menu_position
     }
 
     current->next = (struct node*)malloc(sizeof(struct node));
-
-    //initialiseNode(current->next, title, selection, length, menu_position);
 
     current->next->menu = (struct menu_item*)malloc(sizeof(struct menu_item));
 
@@ -100,12 +100,14 @@ node* Menu_Init(){
     push(new_node, "DIFF UP", 0, 7, 1);
     push(new_node, "DIFF DOWN", 0, 9, 1);
 
+    MENU = new_node;
+
     return new_node;
 }
 
 void Menu_Print(void* menu)
 {
-    node* new_node = (node* )menu;
+    node* new_node = (node* )MENU;
     node * current = new_node;
     oled_clear();
     OLED_setup_column_adress(0x0B, 0x7F);

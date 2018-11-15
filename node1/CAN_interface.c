@@ -8,7 +8,6 @@
 #include "can.h"
 #include "MCP2515.h"
 #include "CAN_interface.h"
-#include "oled_interface.h"
 
 #define test_bit(reg, bit) (reg & (1 << bit))
 
@@ -91,11 +90,10 @@ uint8_t CAN_Receive()
   // GOAL
   if (lr.IDH == 0x55)
   {
-     oled_clear();
-     //printf("%d\n\r", lr.IDH);
-     oled_print("GOAL", 4);
-     _delay_ms(500);
-     lr.data = 0x00;
+    oled_clear();
+    oled_print("GOAL", 4);
+    _delay_ms(500);
+    Menu_Print();
   }
   return 0;
 }

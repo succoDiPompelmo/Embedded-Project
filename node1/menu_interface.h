@@ -11,3 +11,7 @@ void print_selection(void* menu);
 int where_is_one(void* menu);
 
 int menu_length(void *menu);
+
+void clear_selection();
+
+void clear_menu();
