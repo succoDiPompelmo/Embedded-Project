@@ -9,3 +9,5 @@ void setData(uint8_t data);
 int get_DATA_GLOBAL();
 
 int get_IDH();
+
+void setIDH(uint8_t data);

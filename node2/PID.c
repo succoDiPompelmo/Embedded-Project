@@ -6,12 +6,14 @@
 #include <util/delay.h>
 
 volatile int16_t e;
-volatile uint8_t last_e;
+volatile int16_t last_e = 0.0;
 volatile int16_t pwm;
+volatile int16_t integral;
+volatile int16_t derivative;
 
 // PID parameter
 float Kp = 0.1;
-float Kd = 0.0;
+float Kd = 0.001;
 float Ki = 0.0;
 
 #include "PID.h"
@@ -21,6 +23,8 @@ float Ki = 0.0;
 void PID_Init()
 {
   Kp = 0.05;
+  Ki = 0.005;
+  Kd = 0.005;
 }
 
 void PID_update(uint8_t target_8)
@@ -33,9 +37,12 @@ void PID_update(uint8_t target_8)
   target = target * 35;
   // Compute the error
   e = target - current;
+  // Accumulate the error for the integral
+  integral = integral + e;
+  // Derivative
+  derivative = e - last_e;
   // Calculate the control variable
-  pwm = (0.05 * e);
-  //+ (Ki * e) + (Kd * derivative);
+  pwm = (Kp * e) + (Ki * integral) + (Kd * derivative);
 
   // Limit the control variable
   if (pwm > 255) pwm = 255;
@@ -52,11 +59,12 @@ void PID_update(uint8_t target_8)
   // DAC accept an 8 bits value so we need to cast the control variable
   uint8_t pwm_8 = (uint8_t) pwm;
 
-  printf("PWM_8 %d\n\r", pwm_8);
+  //printf("PWM : %d\n", pwm);
 
   // Sedn the value of the control variable to the DAC
+  printf("PWM : %d\n\r", pwm);
   DAC_write(pwm);
 
-  //last_e = e;
+  last_e = e;
 
 }

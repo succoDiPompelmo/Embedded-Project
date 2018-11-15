@@ -15,6 +15,7 @@
 #include "DAC.h"
 #include "Timer_handler.h"
 #include "encoder_interface.h"
+#include "Score.h"
 
 int main()
 {
@@ -48,19 +49,20 @@ int main()
 
   PID_Init();
 
+  Score_Init();
+
   // adc init
   // ADC_Init()
-  DDRF &= ~(1 << PINF0);
-
-  ADMUX &= ~(1 << REFS1);
-  ADMUX |= (1 << REFS0) | (1 << ADLAR);
-
-  ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
-  ADCSRA |= (1 << ADEN) | (1 << ADSC);
+  // DDRF &= ~(1 << PINF0);
+  //
+  // ADMUX &= ~(1 << REFS1);
+  // ADMUX |= (1 << REFS0) | (1 << ADLAR);
+  //
+  // ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
+  // ADCSRA |= (1 << ADEN) | (1 << ADSC);
 
   sei();
 
-  int score_stack = 50;
 
   while(1)
   {
@@ -69,36 +71,38 @@ int main()
 
     //CAN_Trasmission();
 
-    ADCSRA |= (1 << ADEN) | (1 << ADSC);
+    Score_Update();
+
+    // ADCSRA |= (1 << ADEN) | (1 << ADSC);
 
     _delay_ms(10);
 
     Encoder_Read();
 
-    value = ADCH;
+    // value = ADCH;
 
-    //printf("%d\n\r", ADCH);
+    //printf("ADCH :   %d\n\r", value);
 
-    if (value < 10)
-    {
-      score_stack--;
-    }
-
-    if (value > 10 && score_stack <= 50)
-    {
-      score_stack++;
-    }
-
-    if (score_stack == 0)
-    {
-      printf("%s\n\r", "GOAL");
-      // Move to the communication Controller
-      cli();
-      setIDH(0x55);
-      setData(0x00);
-      CAN_Trasmission();
-      sei();
-      score_stack = 50;
-    }
+    // if (value < 10)
+    // {
+    //   score_stack--;
+    // }
+    //
+    // if (value > 10 && score_stack <= 20)
+    // {
+    //   score_stack++;
+    // }
+    //
+    // if (score_stack == 0)
+    // {
+    //   printf("%s\n\r", "GOAL");
+    //   // Move to the communication Controller
+    //   cli();
+    //   //setIDH(0x55);
+    //   //setData(0x00);
+    //   //CAN_Trasmission();
+    //   sei();
+    //   score_stack = 50;
+    // }
   }
 }

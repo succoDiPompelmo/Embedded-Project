@@ -1,1 +1,1 @@
-void Timer_Init();
+void Timer_Init(void* menu);

@@ -211,9 +211,9 @@ int button_pressed(void* menu)
       char str[2] = "\0";
       char c = i + '0';
       str[0] = c;
-      printf("%c\n", c);
+      printf("%c\n\r", c);
       oled_print(str, 1);
-      _delay_ms(1000);
+      _delay_ms(1);
       Menu_Print(menu);
   }
   if (i == 1) start_message();

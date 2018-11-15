@@ -53,14 +53,14 @@ int main()
 
     CAN_Init();
 
-    Timer_Init();
+    Timer_Init(menu);
 
     sei();
 
     while(1)
     {
         // Print the menu
-        Menu_Print(menu);
+        // Menu_Print(menu);
         print_selection(menu);
 
         // MOVE THIS INSIDE THE TIMER

@@ -23,6 +23,8 @@ typedef struct message {
 // Global variable that contain save the content of a message
 struct message l = {0x01, 0x00, 0x20, 0x01};
 
+struct message lr = {0x01, 0x00, 0x20, 0x01};
+
 // Set the data field in the message variable
 void setData(uint8_t data)
 {
@@ -74,7 +76,7 @@ void CAN_Trasmission()
 uint8_t CAN_Receive()
 {
   // Get message ID
-  l.IDH = mcp2515_read(MCP_RXB0SIDH);
+  lr.IDH = mcp2515_read(MCP_RXB0SIDH);
   l.IDL = mcp2515_read(MCP_RXB0SIDL);
 
   // Get data length
@@ -87,11 +89,13 @@ uint8_t CAN_Receive()
   mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
 
   // GOAL
-  if (l.IDH == 0x55)
+  if (lr.IDH == 0x55)
   {
-    oled_clear();
-    oled_print("GOAL", 4);
-    _delay_ms(500);
+     oled_clear();
+     //printf("%d\n\r", lr.IDH);
+     oled_print("GOAL", 4);
+     _delay_ms(500);
+     lr.data = 0x00;
   }
   return 0;
 }

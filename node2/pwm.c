@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <avr/io.h>
 
+#include "pwm.h"
+
 void pwn_set()
 {
   // Set FAST PWN mode and prescaler of 1024

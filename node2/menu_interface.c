@@ -199,7 +199,7 @@ void button_pressed(void* menu)
       printf("%c\n", c);
       oled_print(str, 1);
       _delay_ms(1000.0);
-      Menu_Print(menu);
+      //Menu_Print(menu);
   }
 }
 

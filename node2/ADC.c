@@ -1,3 +1,11 @@
+#include <stdio.h>
+#include <avr/io.h>
+
+#define F_CPU 16000000UL
+#include <util/delay.h>
+
+#include "ADC.h"
+
 void ADC_Init()
 {
   // Set as input a pin on the PORTF to read the IR signal
@@ -18,5 +26,5 @@ uint8_t ADC_Read()
   // Delay to wait for the conversion
   _delay_ms(10);
   // Read the result of the conversion
-  return ADCH
+  return ADCH;
 }

@@ -148,21 +148,8 @@ void manage_message()
     // Check if we received a message that contains the Slider position
     if (get_IDH() == 0x20)
     {
-      /*
-      if (get_DATA_GLOBAL() < 0x80)
-      {
-        PORTH &= ~(1 << PH1);
-      }
-      if (get_DATA_GLOBAL() > 0x80)
-      {
-        PORTH |= (1 << PH1);
-      }
-      */
-      //printf("%d\n", get_DATA_GLOBAL());
-      //if (get_DATA_GLOBAL() > 0x80) DAC_write(get_DATA_GLOBAL() - 0x80);
-      //else DAC_write(0x80 - get_DATA_GLOBAL());
-
       // Use a PID to compute the value to send to the DAC to control the DC motor
+      printf("%d\n\r", get_DATA_GLOBAL());
       PID_update(get_DATA_GLOBAL());
     }
   }
@@ -185,6 +172,7 @@ ISR(INT4_vect)
 {
   cli();
   received = true;
+  //printf("%s\n", "QUI");
   //mcp2515_bit_modify(MCP_CANINTF, 0x01, 0);
   manage_message();
   sei();
