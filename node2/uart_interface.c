@@ -23,6 +23,12 @@ void USART_Transmit(char data)
     return 0;
 }
 
+void web_message()
+{
+  USART_Transmit(0x02);
+  USART_Transmit(0x00);
+}
+
 unsigned char USART_Receive( void )
 {
     // Wait for data to be received
@@ -31,7 +37,6 @@ unsigned char USART_Receive( void )
     // Get and return received data from buffer
     return UDR0;
 }
-
 
 void USART_Flush( void )
 {

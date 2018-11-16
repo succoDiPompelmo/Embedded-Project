@@ -39,7 +39,7 @@ void Timer_Init(void * menu)
   // Set the pin of the LED as OUTPUT
   DDRB |= (1 << LED);
   // Set from wich number the counter must start
-  TCNT1 = 61000;
+  TCNT1 = 64000;
 
   TCCR1A = 0x00;
   // Timer mode with 256 prescaler

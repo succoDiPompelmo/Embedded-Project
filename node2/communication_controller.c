@@ -77,7 +77,7 @@ void incoming_communication()
     if (get_IDH() == SLIDER)
     {
       // Use a PID to compute the value to send to the DAC to control the DC motor
-      printf("%d\n\r", getData());
+      //printf("%d\n\r", getData());
       PID_update(getData());
     }
   }

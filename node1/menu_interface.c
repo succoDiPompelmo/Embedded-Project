@@ -239,7 +239,7 @@ void set_selection(void* menu, int select)
     // Set a copy of the head of the linked list
     node* new_node = (node* )menu;
     node * current = new_node;
-    / Variable to store the index of the selected item
+    // Variable to store the index of the selected item
     int i = 0;
     // Clear the selection part of the oled
     clear_selection();
