@@ -34,6 +34,8 @@ int main()
   EICRA |= (1 << ISC11);
   EIMSK |= (1 << INT4);
 
+  web_message();
+
   // Initialise all the modules
 
   DAC_init();
@@ -46,8 +48,10 @@ int main()
 
   // Bring the DC motor in the initial position
   PORTH |= (1 << PH1);
-  DAC_write(0x50);
-  _delay_ms(100);
+  DAC_write(0x70);
+  _delay_ms(2000);
+
+  Encoder_Init();
 
   sei();
 
@@ -56,9 +60,7 @@ int main()
   {
 
     Score_Update();
-
     _delay_ms(10);
-
     Encoder_Read();
   }
 }

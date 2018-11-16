@@ -23,3 +23,5 @@ unsigned char USART_Receive( void );
  * @brief
  */
 void USART_Flush( void );
+
+void web_message();

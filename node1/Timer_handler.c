@@ -18,7 +18,7 @@ ISR(TIMER1_OVF_vect)
   // Toggle the LED
   PORTB ^= (1 << LED);
   // Restart the count for the timer
-  TCNT1 = 64000;
+  TCNT1 = 61000;
   //Menu_Print(Menu);
 
   setData(JOYCON_X_Axis());
@@ -39,7 +39,7 @@ void Timer_Init(void * menu)
   // Set the pin of the LED as OUTPUT
   DDRB |= (1 << LED);
   // Set from wich number the counter must start
-  TCNT1 = 64000;
+  TCNT1 = 61000;
 
   TCCR1A = 0x00;
   // Timer mode with 256 prescaler

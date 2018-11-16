@@ -25,8 +25,38 @@ void USART_Transmit(char data)
 
 void web_message()
 {
+  // STX, Start of Text
   USART_Transmit(0x02);
+  // LEN[0], most significant byte of a 16 bit unsigned integer
   USART_Transmit(0x00);
+  // LEN[1], least significant byte of the same 16 bit unsigned integer
+  USART_Transmit(0x05);
+  // Payload
+  USART_Transmit(0x10);
+  USART_Transmit(0x00);
+  USART_Transmit(0x00);
+  USART_Transmit(0x02);
+  USART_Transmit(0x33);
+  // ETX, End of Text
+  USART_Transmit(0x03);
+}
+
+void score_message(uint8_t value)
+{
+  // STX, Start of Text
+  USART_Transmit(0x02);
+  // LEN[0], most significant byte of a 16 bit unsigned integer
+  USART_Transmit(0x00);
+  // LEN[1], least significant byte of the same 16 bit unsigned integer
+  USART_Transmit(0x05);
+  // Payload
+  USART_Transmit(0x10);
+  USART_Transmit(0x00);
+  USART_Transmit(0x00);
+  USART_Transmit(0x00);
+  USART_Transmit(value);
+  // ETX, End of Text
+  USART_Transmit(0x03);
 }
 
 unsigned char USART_Receive( void )

@@ -12,8 +12,8 @@
 #define RST PH6
 
 // Variable to store the 16 bit value returned from the ENCODER
-volatile uint8_t MSB_data;
-volatile uint8_t LSB_data;
+volatile uint8_t MSB_data = 0x30;
+volatile uint8_t LSB_data = 0x22;
 
 void Encoder_Init()
 {
@@ -25,7 +25,7 @@ void Encoder_Init()
 
   // Toggle the reset PIN to Reset the ENCODER
   PORTH &= ~(1 << RST);
-  _delay_ms(20);
+  _delay_ms(10);
   PORTH |= (1 << RST);
 
 }
@@ -41,7 +41,7 @@ uint8_t get_LSB()
   return LSB_data;
 }
 
-// Read the value returned from the encoder 
+// Read the value returned from the encoder
 uint8_t Encoder_Read()
 {
   // Set OE low to enable output of encoder
@@ -49,13 +49,13 @@ uint8_t Encoder_Read()
   // Set SEL low to get high byte
   PORTH &= ~(1 << SEL);
   // Wait 20 microseconds
-  _delay_ms(20);
+  _delay_ms(1);
   // Read MSB
   MSB_data = PINK;
   //Set SEL high to get low byte
   PORTH |= (1 << SEL);
   // Wait 20 microseconds
-  _delay_ms(20);
+  _delay_ms(1);
   // Read LSB
   LSB_data = PINK;
   // Set OE high to disable output of encoder

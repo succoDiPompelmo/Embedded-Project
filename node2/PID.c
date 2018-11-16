@@ -12,7 +12,7 @@ volatile int16_t integral;
 volatile int16_t derivative;
 
 // PID parameter
-float Kp = 0.05;
+float Kp = 0.1;
 float Kd = 0.001;
 float Ki = 0.001;
 
@@ -22,9 +22,9 @@ float Ki = 0.001;
 
 void PID_Init()
 {
-  Kp = 0.01;
+  Kp = 0.02;
   Ki = 0.008;
-  Kd = 0.008;
+  Kd = 0.002;
 }
 
 void raise_up_difficulty()
@@ -59,9 +59,6 @@ void PID_update(uint8_t target_8)
   derivative = e - last_e;
   // Calculate the control variable
   pwm = (Kp * e) + (Ki * integral) + (Kd * derivative);
-
-  printf("PWM BEFORE CLAMP: %d\n\r", pwm);
-
   // Limit the control variable
   if (pwm > 255) pwm = 255;
   else if(pwm < - 255) pwm = -255;
@@ -82,7 +79,7 @@ void PID_update(uint8_t target_8)
   // Sedn the value of the control variable to the DAC
   //printf("PWM : %d\n\r", pwm);
   DAC_write(pwm);
-
+  // Save the last error for the integrative control
   last_e = e;
 
 }
