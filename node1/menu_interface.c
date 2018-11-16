@@ -65,6 +65,7 @@ void initialiseNode(node* new_node, char* title, int selection, int length, int 
   new_node->next = NULL;
 }
 
+// Add a node to the linked list 
 void push(node * head, char* title, int selection, int length, int menu_position)
 {
     // Take the head of the list
@@ -91,6 +92,7 @@ void push(node * head, char* title, int selection, int length, int menu_position
     current->next->next = NULL;
 }
 
+// Initialise the menu
 node* Menu_Init(){
     // Title of the first element of our menu
     char name[] = {'M','E','N','U'};
@@ -125,6 +127,7 @@ node* Menu_Init(){
     return new_node;
 }
 
+// Print the menu
 void Menu_Print(void* menu)
 {
     // Set a copy of the head of the linked list
@@ -153,6 +156,7 @@ void Menu_Print(void* menu)
     oled_reset();
 }
 
+// Print the slection symbol in the current position
 void print_selection(void* menu)
 {
     // Set a copy of the head of the linked list
@@ -182,6 +186,7 @@ void print_selection(void* menu)
     oled_reset();
 }
 
+// Find the index of the currently selected item
 int where_is_one(void* menu)
 {
     // Set a copy of the head of the linked list
@@ -205,6 +210,7 @@ int where_is_one(void* menu)
     return i;
 }
 
+// Compute the current length of the menu
 int menu_length(void *menu)
 {
     // Set a copy of the head of the linked list
@@ -234,6 +240,7 @@ void clear_selection()
     }
 }
 
+// Set to one the menu item currently selected
 void set_selection(void* menu, int select)
 {
     // Set a copy of the head of the linked list
@@ -261,6 +268,7 @@ void set_selection(void* menu, int select)
     }
 }
 
+// Clear the menu portion of the screen
 void clear_menu()
 {
     // Set the intial coloumn and page adress for the menu portion of the oled display
@@ -272,6 +280,7 @@ void clear_menu()
     }
 }
 
+// What happen if a press the joystic button
 int button_pressed(void* menu)
 {
   int i = -1;
@@ -280,14 +289,20 @@ int button_pressed(void* menu)
   {
       // Find where is the selection
       i = where_is_one(menu);
+      // Clear the oled
       oled_clear();
+      // Reset the page and coloumn adress
       oled_reset();
+      // Cast a char number into a string
       char str[2] = "\0";
       char c = i + '0';
       str[0] = c;
       printf("%c\n\r", c);
+      // Print the number on the oled
       oled_print(str, 1);
+      // Delay
       _delay_ms(1);
+      // Print the menu
       Menu_Print(menu);
   }
   // Base on the selector position send a particular message
@@ -298,41 +313,59 @@ int button_pressed(void* menu)
   return i;
 }
 
+// If we move the joystick up or down we change the selection
 void change_selection(void* menu)
 {
+    // Check if the joystick is up
     if(check_Y_Axis_UP() == 1 && treshold_UP)
     {
+        // Index of menu item currently selected
         int i = where_is_one(menu);
+        // Manage the boundaries of the linked list
         if(i - 1 >= 0)
         {
+            // Save the index of the new selected item
             i = i - 1;
         }
         else
         {
+            // Save the index of the new selected item
             i = menu_length(menu) - 1;
         }
+        // Change the selection
         set_selection(menu, i);
+        // Set treshold up to false so we don't move the slection more than once each time we move up the joystick
         treshold_UP = false;
     }
+    // Check if the joystick is not up
     if (check_Y_Axis_UP() == -1 && !treshold_UP) {
+        // Reset the threshold to let the user move the selection again
         treshold_UP = true;
     }
 
    if(check_Y_Axis_DOWN() == 1 && treshold_DOWN)
    {
+      // Index of menu item currently selected
       int i = where_is_one(menu);
+      // Manage the boundaries of the linked list
       if(i - 1 >= 0)
       {
+          // Save the index of the new selected item
           i = i - 1;
       }
       else
       {
+          // Save the index of the new selected item
           i = menu_length(menu) - 1;
       }
+      // Change the selection
       set_selection(menu, i);
+      // Set treshold down to false so we don't move the selection more than once each time we move down the joystick
       treshold_DOWN = false;
    }
+   // Check if the joystick is not down
    if (check_Y_Axis_DOWN() == -1 && !treshold_DOWN) {
+      // Reset the threshold to let the user move the selection again
       treshold_DOWN = true;
    }
 }
