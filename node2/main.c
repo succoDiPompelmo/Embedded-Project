@@ -45,14 +45,14 @@ int main()
   DAC_init();
   CAN_Init();
   Timer_Init();
-  Encoder_Init();
+  //Encoder_Init();
   pwn_set();
   PID_Init();
   Score_Init();
 
   // Bring the DC motor in the initial position
   PORTH |= (1 << PH1);
-  DAC_write(0x70);
+  DAC_write(0x55);
   _delay_ms(2000);
 
   Encoder_Init();
@@ -71,5 +71,6 @@ int main()
     int16_t position = ((get_MSB() << 8) | get_LSB());
     // Send the position of the slidebar to the web server
     position_message(position);
+    //check_incoming_message();
   }
 }
