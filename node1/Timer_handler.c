@@ -21,12 +21,13 @@ ISR(TIMER1_OVF_vect)
   TCNT1 = 61000;
   //Menu_Print(Menu);
 
+  // Send Joycon Position to the second node
   setData(JOYCON_X_Axis());
   setIDH(0x30);
   CAN_Trasmission();
 
   _delay_ms(5);
-
+  // Send Slidebar Position to the second node
   setData(SLIDEBAR_Left());
   setIDH(0x20);
   CAN_Trasmission();

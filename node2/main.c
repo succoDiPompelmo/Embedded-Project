@@ -22,15 +22,19 @@ int main()
 
   cli();
 
+  // Initialise usart
   USART_Init (MYBURR);
   fdevopen(*USART_Transmit, *USART_Receive);
 
   // We want PB0 as output
   DDRB |= (1 << PB0);
+  // We want PH1 as output to control the motor direction of motion
   DDRH |= (1 << PH1);
-
+  // Pin for the pwm output
   DDRB |= (1 << PB5);
+  // D
   DDRD &= ~(1 << PD4);
+  // Enable interrupt 4 on rising edge
   EICRA |= (1 << ISC11);
   EIMSK |= (1 << INT4);
 
@@ -58,9 +62,14 @@ int main()
 
   while(1)
   {
-
+    // Update the score
     Score_Update();
     _delay_ms(10);
+    // Read the Encoder
     Encoder_Read();
+    // Save the slidebar position into a 16 bit variable
+    int16_t position = ((get_MSB() << 8) | get_LSB());
+    // Send the position of the slidebar to the web server
+    position_message(position);
   }
 }

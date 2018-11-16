@@ -25,3 +25,9 @@ unsigned char USART_Receive( void );
 void USART_Flush( void );
 
 void web_message();
+
+void score_message(uint8_t value);
+
+void position_message(int16_t value);
+
+void check_incoming_message();

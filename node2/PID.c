@@ -22,9 +22,9 @@ float Ki = 0.001;
 
 void PID_Init()
 {
-  Kp = 0.02;
-  Ki = 0.008;
-  Kd = 0.002;
+  Kp = 0.015;
+  Ki = 0.005;
+  Kd = 0.005;
 }
 
 void raise_up_difficulty()

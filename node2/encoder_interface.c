@@ -6,6 +6,7 @@
 
 #include "encoder_interface.h"
 #include "DAC.h"
+#include "uart_interface.h"
 
 #define OE  PH5
 #define SEL PH3
